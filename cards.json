@@ -1,0 +1,26 @@
+[
+  {"card_id":"D001","driver":"강해져야 해","type":"강점","title":"위기 상황에서도 침착하게 버틴다","detail":"","tag":"위기"},
+  {"card_id":"D002","driver":"강해져야 해","type":"강점","title":"책임을 혼자서라도 끝까지 진다","detail":"","tag":"성과"},
+  {"card_id":"D003","driver":"강해져야 해","type":"단점","title":"도움 요청을 마지막까지 미룬다","detail":"","tag":"협업"},
+  {"card_id":"D004","driver":"강해져야 해","type":"단점","title":"감정을 드러내지 않아 거리감이 생긴다","detail":"","tag":"관계"},
+
+  {"card_id":"D005","driver":"완벽해야 해","type":"강점","title":"기준을 세우고 품질을 지킨다","detail":"","tag":"품질"},
+  {"card_id":"D006","driver":"완벽해야 해","type":"강점","title":"자료와 메시지를 정교하게 다듬는다","detail":"","tag":"보고"},
+  {"card_id":"D007","driver":"완벽해야 해","type":"단점","title":"시작이 늦어진다","detail":"","tag":"실행"},
+  {"card_id":"D008","driver":"완벽해야 해","type":"단점","title":"작은 실수에도 과하게 자책한다","detail":"","tag":"감정"},
+
+  {"card_id":"D009","driver":"서둘러야 해","type":"강점","title":"속도를 내서 일을 추진한다","detail":"","tag":"시간"},
+  {"card_id":"D010","driver":"서둘러야 해","type":"강점","title":"결정을 빨리 내려 흐름을 만든다","detail":"","tag":"성과"},
+  {"card_id":"D011","driver":"서둘러야 해","type":"단점","title":"설명이 짧아 오해가 생긴다","detail":"","tag":"소통"},
+  {"card_id":"D012","driver":"서둘러야 해","type":"단점","title":"빨리 끝내려다 놓치는 게 생긴다","detail":"","tag":"품질"},
+
+  {"card_id":"D013","driver":"노력해야 해","type":"강점","title":"어려운 일도 꾸준히 밀고 간다","detail":"","tag":"지속"},
+  {"card_id":"D014","driver":"노력해야 해","type":"강점","title":"포기하지 않고 시도한다","detail":"","tag":"회복"},
+  {"card_id":"D015","driver":"노력해야 해","type":"단점","title":"방향 없이 열심히만 한다","detail":"","tag":"목표"},
+  {"card_id":"D016","driver":"노력해야 해","type":"단점","title":"결과보다 고생을 강조한다","detail":"","tag":"방식"},
+
+  {"card_id":"D017","driver":"기쁘게 해야 해","type":"강점","title":"분위기를 부드럽게 만들고 관계를 잇는다","detail":"","tag":"관계"},
+  {"card_id":"D018","driver":"기쁘게 해야 해","type":"강점","title":"상대 니즈를 빨리 읽고 맞춘다","detail":"","tag":"협업"},
+  {"card_id":"D019","driver":"기쁘게 해야 해","type":"단점","title":"거절을 못해 일이 과해진다","detail":"","tag":"경계"},
+  {"card_id":"D020","driver":"기쁘게 해야 해","type":"단점","title":"불만이 쌓였다가 한 번에 터진다","detail":"","tag":"갈등"}
+]

@@ -1,0 +1,8 @@
+{
+  "name": "TA 드라이버 카드",
+  "short_name": "드라이버카드",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#111111"
+}
