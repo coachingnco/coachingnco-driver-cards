@@ -3,151 +3,192 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#111111" />/
+  <meta name="theme-color" content="#111111" />
   <link rel="manifest" href="manifest.json" />
   <title>TA 드라이버 카드</title>
+
   <style>
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#f5f5f5; }
-    .wrap { max-width: 520px; margin: 0 auto; padding: 16px; }
-/    .card {
-      background:#fff; border-radius:16px; padding:18px; min-height: 240px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.08);
-      display:flex; flex-direction:column; gap:10px;
+    :root{
+      --ink:#111;
+      --muted:#555;
+      --bg:#f5f5f5;
+      --card:#fff;
+      --shadow: 0 12px 30px rgba(0,0,0,.10);
+      --radius: 22px;
     }
-    .meta { font-size: 14px; color:#555; display:flex; gap:10px; flex-wrap:wrap; }
-    .pill { background:#eee; padding:6px 10px; border-radius:999px; }
-    .title { font-size: 22px; line-height: 1.3; color:#111; margin-top: 8px; }
-    .progress { margin: 14px 0; color:#444; font-size: 14px; display:flex; justify-content:space-between; }
-    .btns { display:flex; gap:10px; margin-top: 14px; }
-    button {
-      flex:1; padding:14px 12px; border:0; border-radius:12px; cursor:pointer;
-      font-size: 16px;
+
+    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+    .wrap{ max-width:520px; margin:0 auto; padding:16px; }
+
+    .hidden{ display:none !important; }
+
+    /* ---- Intro ---- */
+    #screenIntro{ position:relative; min-height:calc(100vh - 32px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+    .intro-hero{
+      width:100%;
+      max-width:420px;
+      height:270px;
+      background-image:url('intro.png');
+      background-size:cover;
+      background-position:center;
+      border-radius:18px;
+
+      /* 클릭 방해 방지 */
+      pointer-events:none;
+      position:relative;
+      z-index:1;
     }
-    .primary { background:#111; color:#fff; }
-    .secondary { background:#e6e6e6; color:#111; }
-    .danger { background:#ffd9d9; color:#111; }
-    .hidden { display:none; }
-    .result { background:#fff; border-radius:16px; padding:18px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
-    .list { margin: 10px 0 0; padding:0; list-style:none; }
-    .intro{
-  min-height: calc(100vh - 48px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  padding: 24px 18px 32px;
-  background: #fff7ef;
-}
+    .intro-card{
+      width:100%;
+      max-width:420px;
+      background:rgba(255,255,255,.92);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px 20px;
+      backdrop-filter: blur(6px);
 
-.intro-hero{
-  width: 100%;
-  max-width: 420px;
-  height: 270px;
-  background-image: url('intro.png'); /* 파일명이 intro.png면 이렇게 */
-  background-size: cover;
-  background-position: center;
-  border-radius: 18px;
+      position:relative;
+      z-index:2;
+      margin-top:-44px; /* 그림과 겹치게 */
+    }
+    .intro-title{
+      font-size:44px;
+      letter-spacing:.5px;
+      margin:2px 0 8px;
+      color:#F0B12A;
+      font-weight:900;
+    }
+    .intro-sub{
+      font-size:14px;
+      line-height:1.7;
+      color:#333;
+    }
+    .intro-pill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:#F7D774;
+      color:#111;
+      font-weight:700;
+    }
 
-  pointer-events: none; /* ✅ 이게 핵심: 클릭 막는 레이어 제거 */
-  position: relative;
-  z-index: 1;
-}
-#screenIntro { position: relative; }
-.intro-card { position: relative; z-index: 2; }
+    /* ---- Common ---- */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .progress{
+      display:flex; justify-content:space-between; align-items:center;
+      margin: 4px 0 12px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .meta{
+      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eee;
+      color:#222;
+      font-size:13px;
+      font-weight:700;
+    }
+    .title{
+      font-size:20px;
+      line-height:1.35;
+      margin:4px 0 10px;
+      font-weight:900;
+    }
+    .detail{
+      color:#333;
+      line-height:1.7;
+      font-size:16px;
+      white-space:pre-line;
+    }
+    .hint{
+      margin-top:10px;
+      color:#666;
+      font-size:13px;
+      line-height:1.6;
+      background:rgba(0,0,0,.04);
+      padding:10px 12px;
+      border-radius:14px;
+    }
 
-  pointer-events: none;   /* ⭐ 시작 버튼 클릭 막는 문제 해결 */
-  z-index: 1;
-}
-#screenIntro { position: relative; }
-.intro-card { position: relative; z-index: 2; }
+    .btns{ display:flex; gap:10px; margin-top:14px; }
+    button{
+      flex:1;
+      padding:14px 12px;
+      border:0;
+      border-radius:14px;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:800;
+    }
+    .primary{ background:#111; color:#fff; }
+    .secondary{ background:#eaeaea; color:#111; }
+    .danger{ background:#ffe1e1; color:#111; }
 
-.intro-card{
-  width: 100%;
-  max-width: 420px;
-  margin-top: -44px;
-  background: rgba(255,255,255,0.82);
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 22px;
-  padding: 18px 18px 20px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.10);
-  backdrop-filter: blur(6px);
-  text-align: left;
-}
+    /* ---- Driver color tint on card ---- */
+    .tint{ position:relative; overflow:hidden; }
+    .tint::before{
+      content:"";
+      position:absolute; inset:0;
+      opacity:.12;
+      pointer-events:none;
+      background: var(--tint, #ddd);
+    }
+    .tint > *{ position:relative; }
 
-.intro-title{
-  font-size: 34px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  color: #f0b53a;
-  margin: 4px 0 10px;
-}
-
-.intro-text{
-  margin: 6px 0 16px;
-  line-height: 1.55;
-  font-size: 16px;
-  color: #333;
-}
-
-.intro-pill{
-  display:inline-block;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: #ffe08a;
-  color: #2b2b2b;
-  font-weight: 800;
-}
-
-.intro-start{
-  width: 100%;
-  border: 0;
-  height: 54px;
-  border-radius: 999px;
-  font-size: 18px;
-  font-weight: 900;
-  background: #f6c44a;
-  color: #fff;
-  box-shadow: 0 10px 18px rgba(0,0,0,0.12);
-}
-
-    .list li { padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; }
+    /* Result lists */
+    .list{ margin:8px 0 0; padding:0; list-style:none; }
+    .list li{ padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; gap:12px; }
+    .list li:last-child{ border-bottom:0; }
   </style>
 </head>
+
 <body>
   <div class="wrap">
- <div id="screenIntro" class="intro">
-  <div class="intro-hero" aria-hidden="true"></div>
 
-  <div class="intro-card">
-   <div class="intro-title">DRIVER CARD</div>
+    <!-- Intro -->
+    <div id="screenIntro">
+      <div class="intro-hero" aria-hidden="true"></div>
 
-    <p class="intro-text">
-      한장씩 넘기며 자신에게 해당되는 카드에서 <span class="intro-pill">해당됨</span>을 누르세요.<br/>
-      해당되지 않으면 <span class="intro-pill">다음</span>을 누르세요.
-    </p>
+      <div class="intro-card">
+        <div class="intro-title">DRIVER CARD</div>
+        <div class="intro-sub">
+          한 장씩 넘기며 자신에게 해당되는 카드에서 <span class="intro-pill">해당됨</span>을 누르세요.<br/>
+          해당되지 않으면 <span class="intro-pill">다음</span>을 누르세요.
+        </div>
 
-    <div class="btns">
-      <button id="btnBegin" class="primary">시작</button>
+        <div class="btns" style="margin-top:16px;">
+          <button id="btnBegin" type="button" class="primary">시작</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
+    <!-- Play -->
     <div id="screenPlay" class="hidden">
       <div class="progress">
         <div id="progressText">0/0</div>
         <div>
-          <button id="btnReset" class="danger" style="padding:8px 10px; border-radius:10px; font-size:14px;">초기화</button>
+          <button id="btnReset" class="danger" style="padding:10px 12px; border-radius:12px; font-size:14px;">초기화</button>
         </div>
       </div>
 
-      <div class="card">
+      <div id="cardBox" class="card tint">
         <div class="meta">
           <div id="mDriver" class="pill"></div>
           <div id="mType" class="pill"></div>
-          <div id="mTag" class="pill"></div>
         </div>
+
         <div id="cTitle" class="title"></div>
-        <div id="cDetail" style="color:#444; line-height:1.6;"></div>
+        <div id="cDetail" class="detail"></div>
+        <div id="cHint" class="hint hidden"></div>
 
         <div class="btns">
           <button id="btnPrev" class="secondary">이전</button>
@@ -161,34 +202,26 @@
       </div>
     </div>
 
+    <!-- Result -->
     <div id="screenResult" class="hidden">
-      <div class="result">
+      <div class="card">
         <div class="title">결과</div>
-        <div id="summary" style="margin-top:10px; color:#444; line-height:1.7; white-space:pre-line;"></div>
+        <div id="summary" class="detail" style="margin-top:10px;"></div>
 
-        <div style="margin-top:14px; color:#111;">드라이버별 선택 개수</div>
+        <div style="margin-top:16px; font-weight:900;">드라이버별 선택 개수</div>
         <ul id="driverCounts" class="list"></ul>
 
-        <div style="margin-top:14px; color:#111;">강점/단점 비율</div>
+        <div style="margin-top:16px; font-weight:900;">강점/스트레스 비율</div>
         <ul id="typeCounts" class="list"></ul>
-
-        <div style="margin-top:14px; color:#111;">드라이버별 강점/단점</div>
-        <ul id="driverTypeCounts" class="list"></ul>
 
         <div class="btns" style="margin-top:18px;">
           <button id="btnBack" class="secondary">돌아가기</button>
         </div>
       </div>
     </div>
+
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
