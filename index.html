@@ -5,380 +5,166 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#111111" />
   <link rel="manifest" href="manifest.json" />
-  <title>TA 드라이버 카드</title>
+  <title>드라이버 카드</title>
 
   <style>
-    :root{
-      --bg:#f5f5f5;
-      --ink:#111;
-      --muted:#666;
-      --card:#fff;
-      --shadow:0 8px 24px rgba(0,0,0,.08);
-      --radius:18px;
-      --btnRadius:16px;
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#f5f5f5; }
+    .wrap { max-width: 520px; margin: 0 auto; padding: 16px; }
+
+    .card{
+      background:#fff; border-radius:16px; padding:18px; min-height:240px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      display:flex; flex-direction:column; gap:10px;
     }
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
-    .wrap{ max-width:520px; margin:0 auto; padding:16px; }
-    .hidden{ display:none !important; }
+
+    .meta { font-size:14px; color:#555; display:flex; gap:10px; flex-wrap:wrap; }
+    .pill { background:#eee; padding:6px 10px; border-radius:999px; }
+
+    .title { font-size:22px; line-height:1.3; color:#111; margin-top:8px; }
+    .statement { font-size:18px; line-height:1.45; color:#111; margin: 8px 0 0 0; }
+
+    .progress { margin: 14px 0; color:#444; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+    .btns { display:flex; gap:10px; margin-top:14px; }
+    button{
+      flex:1; padding:14px 12px; border:0; border-radius:12px; cursor:pointer;
+      font-size:16px;
+    }
+    .primary { background:#111; color:#fff; }
+    .secondary { background:#e6e6e6; color:#111; }
+    .danger { background:#ffd9d9; color:#111; }
+
+    .hidden{ display:none; }
 
     /* Intro */
-    #screenIntro{ min-height: calc(100vh - 32px); display:flex; flex-direction:column; gap:12px; justify-content:center; }
+    .intro{
+      min-height: calc(100vh - 48px);
+      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      padding-top: 8px;
+    }
+
     .intro-hero{
       width:100%;
-      max-width:420px;
-      height:270px;
-      margin:0 auto;
-      background-image:url('intro.png');
-      background-size:cover;
-      background-position:center;
-      border-radius:18px;
-      pointer-events:none; /* 버튼 클릭 방해 방지 */
-      position:relative;
-      z-index:1;
+      max-width: 420px;
+      height: 270px;
+      background-image: url('intro.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 18px;
+
+      /* ✅ 모바일에서 버튼 클릭 막는 문제 방지 */
+      pointer-events: none;
+      position: relative;
+      z-index: 1;
     }
+
     .intro-card{
       width:100%;
-      max-width:420px;
-      margin:-44px auto 0;
-      background:rgba(255,255,255,.86);
-      border:1px solid rgba(0,0,0,.06);
-      border-radius:22px;
-      padding:18px 18px 20px;
-      box-shadow:0 18px 40px rgba(0,0,0,.10);
+      max-width: 420px;
+      margin-top: -44px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 22px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.10);
       backdrop-filter: blur(6px);
-      position:relative;
-      z-index:2; /* 이미지 위에 올라와 클릭 가능 */
+      position: relative;
+      z-index: 2;
     }
-    .intro-title{ font-size:40px; letter-spacing:.5px; margin:2px 0 8px; }
-    .intro-text{ margin:0 0 16px; line-height:1.55; color:#222; font-size:18px; }
-    .intro-pill{ display:inline-block; padding:3px 10px; border-radius:999px; background:#ffe08a; color:#111; }
-    .btnWide{
-      width:100%;
-      border:0;
-      border-radius:var(--btnRadius);
-      padding:16px 14px;
-      font-size:18px;
-      cursor:pointer;
-      box-shadow:0 8px 20px rgba(0,0,0,.08);
-    }
-    .primary{ background:#111; color:#fff; }
-    .secondary{ background:#e6e6e6; color:#111; }
-    .danger{ background:#ffd9d9; color:#111; }
 
-    /* Play */
-    .topbar{ display:flex; justify-content:space-between; align-items:center; margin:8px 2px 10px; color:#333; }
-    .progress{ font-size:16px; color:#333; }
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:var(--shadow);
-      min-height:260px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      position:relative;
+    .intro-title{
+      font-size: 44px;
+      letter-spacing: .5px;
+      margin: 2px 0 8px;
+      color: #F2B705; /* ✅ 진한 노란색 */
+      font-weight: 800;
     }
-    .meta{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .pill{ background:rgba(255,255,255,.7); border:1px solid rgba(0,0,0,.08); padding:6px 12px; border-radius:999px; font-size:14px; }
-    .text{ font-size:20px; line-height:1.6; margin:6px 0 6px; color:#111; }
-    .btnRow{ display:flex; gap:10px; margin-top:auto; }
-    .btnRow button{ flex:1; }
-    .resultOnly{ margin-top:10px; }
+
+    .intro-text{
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 10px 0 18px;
+      color: #111;
+    }
+
+    .intro-pill{
+      background: #FFE08A;
+      padding: 2px 10px;
+      border-radius: 999px;
+      display:inline-block;
+    }
 
     /* Result */
-    .resultBox{
-      background:#fff;
-      border-radius:18px;
-      padding:16px;
-      box-shadow:var(--shadow);
-    }
-    .resultTitle{ font-size:22px; margin:0 0 10px; }
-    .list{ margin:0; padding:0; list-style:none; }
-    .list li{
-      padding:10px 0;
-      border-bottom:1px solid #eee;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .list li:last-child{ border-bottom:0; }
-    .muted{ color:var(--muted); }
-
-    /* Driver color themes (연한 배경) */
-    .theme-strong   { background:#eaf2ff; }
-    .theme-perfect  { background:#f1eaff; }
-    .theme-hurry    { background:#fff1e6; }
-    .theme-tryhard  { background:#eafff2; }
-    .theme-please   { background:#fff7de; }
+    .result { background:#fff; border-radius:16px; padding:18px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .list { margin: 10px 0 0; padding:0; list-style:none; }
+    .list li { padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
 
-    <!-- Intro -->
-    <div id="screenIntro">
+    <!-- Intro Screen -->
+    <div id="screenIntro" class="intro">
       <div class="intro-hero" aria-hidden="true"></div>
 
       <div class="intro-card">
-        <div class="intro-title">DRIVER CARD</div>
+        <div class="intro-title">드라이버 카드</div>
+
         <p class="intro-text">
-          한장씩 넘기며 자신에게 해당되는 카드에서 <span class="intro-pill">해당됨</span>을 누르세요.<br/>
-          해당되지 않으면 <span class="intro-pill">다음</span>을 누르세요.<br/>
-          제한 없음 / 결과는 개인만 확인합니다.
+          한 장씩 넘기며 자신에게 해당되는 카드에서 <span class="intro-pill">해당됨</span>을 누르세요.<br/>
+          해당되지 않으면 <span class="intro-pill">다음</span>을 누르세요.
         </p>
-        <button id="btnBegin" class="btnWide primary">시작</button>
+
+        <div class="btns">
+          <button id="btnBegin" class="primary">시작</button>
+        </div>
       </div>
     </div>
 
-    <!-- Play -->
+    <!-- Play Screen -->
     <div id="screenPlay" class="hidden">
-      <div class="topbar">
-        <div class="progress" id="progressText">1/40</div>
-        <button id="btnReset" class="btnWide danger" style="width:auto; padding:10px 14px; font-size:15px; box-shadow:none;">초기화</button>
+      <div class="progress">
+        <div id="progressText">0/0</div>
+        <button id="btnReset" class="danger" style="flex:0 0 auto; padding:8px 10px; border-radius:10px; font-size:14px;">초기화</button>
       </div>
 
-      <div id="cardBox" class="card">
+      <div class="card">
         <div class="meta">
-          <span class="pill" id="pillDriver">드라이버</span>
-          <span class="pill" id="pillType">강점</span>
-        </div>
-        <div class="text" id="cardText">카드 내용</div>
-
-        <div class="btnRow">
-          <button id="btnPrev" class="btnWide secondary">이전</button>
-          <button id="btnYes" class="btnWide primary">해당됨</button>
-          <button id="btnNext" class="btnWide secondary">다음</button>
+          <span id="tagDriver" class="pill">-</span>
+          <span id="tagType" class="pill">-</span>
         </div>
 
-        <!-- 결과보기는 마지막 카드에서만 -->
-        <button id="btnResult" class="btnWide secondary resultOnly hidden">결과 보기</button>
+        <div id="statement" class="statement">로딩 중…</div>
+
+        <div class="btns">
+          <button id="btnPrev" class="secondary">이전</button>
+          <button id="btnYes" class="primary">해당됨</button>
+          <button id="btnNext" class="secondary">다음</button>
+        </div>
+
+        <!-- ✅ 마지막 카드에서만 보이게 JS에서 제어 -->
+        <div class="btns">
+          <button id="btnFinish" class="secondary">결과 보기</button>
+        </div>
       </div>
     </div>
 
-    <!-- Result -->
+    <!-- Result Screen -->
     <div id="screenResult" class="hidden">
-      <div class="topbar">
-        <div class="progress">결과</div>
-        <button id="btnBack" class="btnWide secondary" style="width:auto; padding:10px 14px; font-size:15px; box-shadow:none;">돌아가기</button>
-      </div>
+      <div class="result">
+        <div class="title">결과</div>
+        <div id="resultSummary" style="margin-top:8px; color:#444; font-size:14px;"></div>
+        <ul id="resultList" class="list"></ul>
 
-      <div class="resultBox">
-        <div class="resultTitle">내 드라이버 결과</div>
-        <div class="muted" style="margin-bottom:10px;">해당됨으로 선택한 카드 수(드라이버별)</div>
-        <ul class="list" id="resultList"></ul>
+        <div class="btns" style="margin-top:16px;">
+          <button id="btnBack" class="secondary">돌아가기</button>
+          <button id="btnRestart" class="primary">다시하기</button>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <script>
-    const STORAGE_KEY = "ta_driver_pwa_v2";
-
-    let cards = [];
-    let idx = 0;
-    let selected = new Set(); // card_id 저장
-
-    const drivers = ["강해져야 해","완벽해야 해","서둘러야 해","노력해야 해","기쁘게 해야 해"];
-    const types = ["강점","스트레스"];
-
-    function $(id){ return document.getElementById(id); }
-
-    function saveState(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        idx,
-        selected: Array.from(selected)
-      }));
-    }
-
-    function loadState(){
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return;
-      try{
-        const s = JSON.parse(raw);
-        idx = Number.isInteger(s.idx) ? s.idx : 0;
-        selected = new Set(Array.isArray(s.selected) ? s.selected : []);
-      }catch(e){}
-    }
-
-    async function loadCards(){
-      // 캐시 때문에 변경이 안 보일 수 있어서 busting
-      const res = await fetch("cards.json?v=" + Date.now());
-      if(!res.ok) throw new Error("cards.json을 불러오지 못했습니다.");
-      const data = await res.json();
-      if(!Array.isArray(data)) throw new Error("cards.json 형식이 배열이 아닙니다.");
-      cards = data;
-      if(idx < 0) idx = 0;
-      if(idx >= cards.length) idx = cards.length - 1;
-    }
-
-    function showScreen(name){
-      $("screenIntro").classList.add("hidden");
-      $("screenPlay").classList.add("hidden");
-      $("screenResult").classList.add("hidden");
-      $(name).classList.remove("hidden");
-    }
-
-    function normDriver(d){
-      // cards.json 값이 약간 달라도 색 매칭되게
-      if(!d) return "";
-      if(d.includes("강해")) return "strong";
-      if(d.includes("완벽")) return "perfect";
-      if(d.includes("서둘")) return "hurry";
-      if(d.includes("노력")) return "tryhard";
-      if(d.includes("기쁘")) return "please";
-      return "";
-    }
-
-    function cardId(c){
-      // card_id가 없으면 id나 index 기반으로라도 동작
-      return c.card_id ?? c.id ?? (c.driver + "|" + c.type + "|" + c.text);
-    }
-
-    function renderCard(){
-      if(!cards.length) return;
-
-      const c = cards[idx];
-      const d = c.driver ?? "";
-      const t = c.type ?? "";
-      const text = c.text ?? c.content ?? "";
-
-      $("pillDriver").textContent = d || "드라이버";
-      $("pillType").textContent = t || "유형";
-      $("cardText").textContent = text;
-
-      $("progressText").textContent = (idx + 1) + "/" + cards.length;
-
-      // 배경 테마
-      const box = $("cardBox");
-      box.classList.remove("theme-strong","theme-perfect","theme-hurry","theme-tryhard","theme-please");
-      const theme = normDriver(d);
-      if(theme) box.classList.add("theme-" + theme);
-
-      // 버튼 상태
-      $("btnPrev").disabled = (idx === 0);
-
-      // 결과보기: 마지막 카드에서만
-      if(idx === cards.length - 1){
-        $("btnResult").classList.remove("hidden");
-      }else{
-        $("btnResult").classList.add("hidden");
-      }
-    }
-
-    function renderResults(){
-      const counts = {};
-      drivers.forEach(d => counts[d] = 0);
-
-      for(const c of cards){
-        const id = cardId(c);
-        if(selected.has(id)){
-          const d = c.driver ?? "기타";
-          counts[d] = (counts[d] ?? 0) + 1;
-        }
-      }
-
-      const ul = $("resultList");
-      ul.innerHTML = "";
-      Object.entries(counts).forEach(([d, n]) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<span>${d}</span><span>${n}개</span>`;
-        ul.appendChild(li);
-      });
-    }
-
-    function resetAll(){
-      localStorage.removeItem(STORAGE_KEY);
-      idx = 0;
-      selected = new Set();
-      showScreen("screenIntro");
-    }
-
-    function wireEvents(){
-      $("btnBegin").addEventListener("click", () => {
-        showScreen("screenPlay");
-        idx = 0; // 시작하면 첫 카드부터
-        renderCard();
-        saveState();
-      });
-
-      $("btnPrev").addEventListener("click", () => {
-        if(idx > 0){ idx -= 1; renderCard(); saveState(); }
-      });
-
-      $("btnNext").addEventListener("click", () => {
-        if(idx < cards.length - 1){ idx += 1; renderCard(); saveState(); }
-      });
-
-      $("btnYes").addEventListener("click", () => {
-        const c = cards[idx];
-        selected.add(cardId(c));
-        saveState();
-        if(idx < cards.length - 1){
-          idx += 1;
-          renderCard();
-        }else{
-          // 마지막 카드에서 해당됨 눌러도 그대로 마지막
-          renderCard();
-        }
-      });
-
-      $("btnResult").addEventListener("click", () => {
-        showScreen("screenResult");
-        renderResults();
-      });
-
-      $("btnBack").addEventListener("click", () => {
-        showScreen("screenPlay");
-        renderCard();
-      });
-
-      $("btnReset").addEventListener("click", () => {
-        if(confirm("진단을 초기화할까요?")){
-          resetAll();
-        }
-      });
-
-      // 스와이프는 Play 화면에서만 동작하도록
-      let startX = null;
-      document.addEventListener("touchstart", (e) => {
-        if($("screenPlay").classList.contains("hidden")) return;
-        startX = e.touches[0].clientX;
-      }, {passive:true});
-
-      document.addEventListener("touchend", (e) => {
-        if($("screenPlay").classList.contains("hidden")) return;
-        if(startX === null) return;
-        const endX = e.changedTouches[0].clientX;
-        const dx = endX - startX;
-        startX = null;
-        if(Math.abs(dx) < 40) return;
-        if(dx > 0){
-          if(idx > 0){ idx -= 1; renderCard(); saveState(); }
-        }else{
-          if(idx < cards.length - 1){ idx += 1; renderCard(); saveState(); }
-        }
-      }, {passive:true});
-    }
-
-    function registerSW(){
-      if("serviceWorker" in navigator){
-        navigator.serviceWorker.register("sw.js").catch(()=>{});
-      }
-    }
-
-    (async function init(){
-      try{
-        loadState();
-        await loadCards();
-        wireEvents();
-        registerSW();
-        showScreen("screenIntro"); // 시작은 항상 인트로
-      }catch(err){
-        alert("초기화 오류: " + err.message);
-      }
-    })();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
