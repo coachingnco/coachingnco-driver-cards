@@ -43,11 +43,17 @@
   width: 100%;
   max-width: 420px;
   height: 270px;
-
-  background-image: url('intro.png'); /* 레포에 있는 파일명 그대로 */
+  background-image: url('intro.png'); /* 파일명이 intro.png면 이렇게 */
   background-size: cover;
   background-position: center;
   border-radius: 18px;
+
+  pointer-events: none; /* ✅ 이게 핵심: 클릭 막는 레이어 제거 */
+  position: relative;
+  z-index: 1;
+}
+#screenIntro { position: relative; }
+.intro-card { position: relative; z-index: 2; }
 
   pointer-events: none;   /* ⭐ 시작 버튼 클릭 막는 문제 해결 */
   z-index: 1;
@@ -179,6 +185,7 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
