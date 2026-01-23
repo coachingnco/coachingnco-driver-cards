@@ -1,4 +1,5 @@
-const STORAGE_KEY = "ta_driver_pwa_v3"; // 버전 올려서 캐시/저장 꼬임 방지
+alert("app.js 로딩됨")
+  ;const STORAGE_KEY = "ta_driver_pwa_v3"; // 버전 올려서 캐시/저장 꼬임 방지
 
 let cards = [];
 let idx = 0;
@@ -194,3 +195,4 @@ function registerSW(){
     console.error(err);
   }
 })();
+
