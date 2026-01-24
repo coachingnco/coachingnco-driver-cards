@@ -5,47 +5,312 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#111111" />
   <link rel="manifest" href="manifest.json" />
-  <title>드라이버 카드</title>
+  <title>드라이브 카드</title>
 
   <style>
     :root{
-      --bg:#f5f5f5;
-      --card:#ffffff;
-      --text:#111;
+      --bg: #f6f6f7;
+      --ink:#111;
       --muted:#666;
-      --shadow: 0 10px 30px rgba(0,0,0,.10);
+      --card:#fff;
+      --shadow: 0 12px 30px rgba(0,0,0,.10);
       --radius: 22px;
-      --pill:#f2f2f2;
-      --yellow:#f5b400;
+
+      /* 드라이버별 배경색: "조금 더 진하게" */
+      --c-strong:  #dfeeff;
+      --c-perfect: #ffe7b8;
+      --c-hurry:   #ffd0da;
+      --c-try:     #d8ffe0;
+      --c-please:  #e7dcff;
+
+      /* 드라이버별 라벨(막대) 색: 더 선명하게 */
+      --b-strong:  #4aa3ff;
+      --b-perfect: #ffb020;
+      --b-hurry:   #ff5a7a;
+      --b-try:     #2ecc71;
+      --b-please:  #8e62ff;
+
+      /* 인트로 타이틀 색: 진한 노란색 */
+      --title-yellow: #f4b400;
     }
+
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       background: var(--bg);
-      color: var(--text);
+      color: var(--ink);
     }
-    .wrap{ max-width:520px; margin:0 auto; padding:16px; }
+    .wrap{
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 16px;
+    }
 
-    .hidden{ display:none !important; }
+    .hidden{ display:none; }
 
-    /* ---------- Intro ---------- */
-    .intro{ min-height: calc(100vh - 32px); display:flex; align-items:flex-start; justify-content:center; padding-top:24px; position:relative; }
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    /* Intro */
+    #screenIntro{
+      min-height: calc(100vh - 32px);
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+      justify-content:center;
+    }
+
     .intro-hero{
       width:100%;
-      max-width:420px;
-      height:270px;
+      max-width: 420px;
+      height: 270px;
+      margin: 0 auto;
+      border-radius: 18px;
       background-image: url('intro.png');
       background-size: cover;
-      background-position:center;
-      border-radius:18px;
-      position:relative;
-      z-index:1;
-      pointer-events:none; /* ✅ 클릭 막힘 방지 */
+      background-position: center;
+      pointer-events: none; /* 버튼 클릭 방해 방지 */
     }
+
     .intro-card{
       width:100%;
-      max-width:420px;
-      margin-top:-44px;
-      background: rgba(255,255,255,.90);
-      border:1px solid rgba(
+      max-width: 420px;
+      margin: -44px auto 0;
+      border-radius: 22px;
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,.10);
+      padding: 18px 18px 20px;
+      backdrop-filter: blur(6px);
+    }
+
+    .intro-title{
+      font-size: 44px;
+      letter-spacing: -0.5px;
+      line-height: 1.05;
+      margin: 6px 0 10px;
+      color: var(--title-yellow);
+      font-weight: 900;
+    }
+
+    .intro-sub{
+      font-size: 18px;
+      color: #222;
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eee;
+      color: #111;
+      font-size: 14px;
+    }
+    .pill.yellow{ background: #ffe08a; }
+
+    .btnRow{ display:flex; gap:10px; }
+    button{
+      border:0;
+      border-radius: 16px;
+      padding: 14px 12px;
+      font-size: 18px;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: scale(.99); }
+
+    .primary{
+      background:#111;
+      color:#fff;
+      width:100%;
+      padding: 18px 12px;
+      border-radius: 20px;
+      font-size: 20px;
+    }
+    .ghost{
+      background:#ececec;
+      color:#111;
+      flex:1;
+    }
+    .danger{
+      background:#ffe2e6;
+      color:#111;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+    .muted{ color: var(--muted); font-size:14px; }
+
+    /* Play */
+    #topBar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin: 8px 0 12px;
+    }
+    #progressText{
+      font-size: 16px;
+      color:#333;
+    }
+
+    .qCard{
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .metaRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 14px;
+    }
+    .metaPill{
+      background: rgba(255,255,255,.75);
+      border: 1px solid rgba(0,0,0,.06);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 16px;
+      color:#111;
+    }
+
+    .qText{
+      font-size: 22px;
+      line-height: 1.55;
+      color:#111;
+      margin: 10px 0 18px;
+      white-space: pre-line;
+    }
+
+    .bigBtns{
+      display:flex;
+      gap:12px;
+      margin-top: 10px;
+    }
+    .bigBtns button{
+      flex:1;
+      padding: 18px 10px;
+      border-radius: 18px;
+      font-size: 20px;
+    }
+    .yes{
+      background:#111;
+      color:#fff;
+    }
+
+    #btnResult{
+      margin-top: 12px;
+      width:100%;
+      background:#e9e9e9;
+      color:#111;
+      padding: 18px 12px;
+      border-radius: 18px;
+      font-size: 20px;
+      display:none; /* 마지막 카드에서만 보이게 */
+    }
+
+    /* Driver background classes */
+    .d-strong  { background: var(--c-strong); }
+    .d-perfect { background: var(--c-perfect); }
+    .d-hurry   { background: var(--c-hurry); }
+    .d-try     { background: var(--c-try); }
+    .d-please  { background: var(--c-please); }
+
+    /* Result chart */
+    #chart{ display:flex; flex-direction:column; gap:14px; margin-top:14px; }
+    .barRow{
+      background:#fff;
+      border-radius:16px;
+      padding:14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+    .barTitle{ font-size:16px; margin-bottom:10px; color:#111; }
+    .barLine{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+    .barLabel{ font-size:13px; color:#333; }
+    .barTrack{ width:100%; height:14px; background:#eee; border-radius:999px; overflow:hidden; }
+    .barFill{ height:100%; border-radius:999px; }
+
+    .resultTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .resultTitle{ font-size:22px; margin: 4px 0 0; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- Intro Screen -->
+    <section id="screenIntro">
+      <div class="intro-hero" aria-hidden="true"></div>
+
+      <div class="intro-card">
+        <div class="intro-title">드라이브 카드</div>
+
+        <div class="intro-sub">
+          한 장씩 넘기며 자신에게 해당되는 카드에서
+          <span class="pill yellow">해당됨</span>
+          을 누르세요.<br/>
+          해당되지 않으면
+          <span class="pill yellow">다음</span>
+          을 누르세요.
+        </div>
+
+        <button id="btnBegin" class="primary" type="button">시작</button>
+        <div class="muted" style="margin-top:10px;">제한 없음 · 결과는 개인만 확인</div>
+      </div>
+    </section>
+
+    <!-- Play Screen -->
+    <section id="screenPlay" class="hidden">
+      <div id="topBar">
+        <div id="progressText">1/40</div>
+        <button id="btnReset" class="danger" type="button">초기화</button>
+      </div>
+
+      <div id="questionCard" class="qCard d-strong">
+        <div class="metaRow">
+          <div id="pillDriver" class="metaPill">강해져야 해</div>
+          <div id="pillType" class="metaPill">강점</div>
+        </div>
+
+        <div id="qText" class="qText">카드를 불러오는 중…</div>
+
+        <div class="bigBtns">
+          <button id="btnPrev" class="ghost" type="button">이전</button>
+          <button id="btnYes" class="yes" type="button">해당됨</button>
+          <button id="btnNext" class="ghost" type="button">다음</button>
+        </div>
+
+        <button id="btnResult" type="button">결과 보기</button>
+      </div>
+    </section>
+
+    <!-- Result Screen -->
+    <section id="screenResult" class="hidden">
+      <div class="card">
+        <div class="resultTop">
+          <div class="resultTitle">결과</div>
+          <button id="btnBack" class="ghost" type="button" style="max-width:160px;">진단으로</button>
+        </div>
+        <div class="muted" style="margin-top:8px;">각 드라이버별 강점/과용(스트레스) 선택 수</div>
+        <div id="chart"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
