@@ -2,344 +2,257 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>드라이버 카드</title>
-  <meta name="theme-color" content="#111111" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>드라이브 카드</title>
   <style>
     :root{
-      --bg:#0f0f10;
-      --card:#ffffff;
-      --text:#111;
+      --bg:#f6f6f6;
+      --ink:#111;
       --muted:#666;
-      --shadow: 0 10px 30px rgba(0,0,0,.12);
-      --radius: 18px;
+      --card:#fff;
+      --shadow: 0 18px 40px rgba(0,0,0,.10);
+      --radius:22px;
+      --btn:#111;
+      --btnText:#fff;
     }
-
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
-      background: linear-gradient(180deg, #0f0f10 0%, #141416 100%);
-      color:#fff;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      padding:18px 12px 28px;
+      font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Segoe UI, Roboto, sans-serif;
+      background:var(--bg);
+      color:var(--ink);
     }
-
     .wrap{
       width:100%;
-      max-width:460px;
+      min-height:100vh;
+      padding:18px 14px 24px;
+      display:flex;
+      justify-content:center;
+    }
+    .container{
+      width:100%;
+      max-width:420px;
     }
 
-    .hidden{ display:none !important; }
+    /* screens */
+    .screen{display:none}
+    .screen.active{display:block}
 
-    /* --- Intro --- */
-    .intro{
-      background: rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius: 22px;
-      padding:14px;
-      box-shadow: 0 10px 35px rgba(0,0,0,.25);
-      overflow:hidden;
-    }
-    .intro-hero{
+    /* intro */
+    .hero{
       width:100%;
       height:270px;
-      border-radius: 18px;
-      background-image: url('intro.png');
-      background-size: cover;
-      background-position: center;
-      /* ✅ 이미지가 버튼 터치를 가로채지 않게 */
-      pointer-events:none;
-    }
-    .intro-card{
-      margin-top:12px;
-      background: rgba(255,255,255,0.92);
-      color:#111;
-      border-radius: 18px;
-      padding:14px 14px 12px;
+      border-radius:18px;
+      background: url('intro.png') center/cover no-repeat;
       box-shadow: var(--shadow);
-      position:relative;
-      z-index:2;
     }
-    .intro-title{
-      font-size:22px;
+    .introCard{
+      margin-top:-42px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: var(--radius);
+      padding:18px 18px 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .title{
+      font-size:44px;
+      letter-spacing:-1px;
+      margin:0 0 12px;
+      color:#f3b400; /* 진한 노란색 */
       font-weight:900;
-      letter-spacing:-0.3px;
-      margin:0 0 8px 0;
-      color:#F5C400; /* 진한 노란색 */
     }
-    .intro-desc{
-      margin:0 0 12px 0;
+    .introText{
+      margin:0 0 18px;
       line-height:1.6;
-      color:#333;
-      font-size:15px;
-    }
-
-    /* --- Common card --- */
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin:10px 0 10px;
-      gap:10px;
-    }
-    .progress{
-      font-size:14px;
-      color:rgba(255,255,255,0.88);
-    }
-    .btn-mini{
-      border:none;
-      background: rgba(255,255,255,0.16);
-      color:#fff;
-      padding:8px 10px;
-      border-radius: 12px;
-      font-size:13px;
-      cursor:pointer;
-    }
-
-    .card{
-      background: var(--card);
-      color: var(--text);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .meta{
-      display:flex;
-      gap:8px;
-      padding:12px 14px 0;
-      flex-wrap:wrap;
+      font-size:20px;
     }
     .pill{
-      display:inline-flex;
-      align-items:center;
-      padding:7px 10px;
-      border-radius: 999px;
-      font-size:12px;
-      font-weight:700;
-      background: rgba(0,0,0,0.06);
-      color:#222;
-    }
-    .pill.driver{
-      background: var(--accent, #222);
-      color:white;
-    }
-    .pill.type{
-      background: rgba(0,0,0,0.07);
-      color:#222;
-    }
-
-    .card-body{
-      padding:12px 16px 16px;
-    }
-    .q-text{
-      font-size:20px;
-      line-height:1.55;
-      letter-spacing:-0.2px;
-      margin:6px 0 0;
-      white-space:pre-line;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      padding:12px 14px 14px;
-    }
-    .btn{
-      flex:1;
-      border:none;
-      border-radius: 16px;
-      padding:12px 10px;
-      font-size:16px;
+      display:inline-block;
+      padding:6px 14px;
+      border-radius:999px;
+      background:#ffe08a;
       font-weight:800;
+    }
+    .btnRow{display:flex; gap:10px}
+    button{
+      appearance:none;
+      border:0;
       cursor:pointer;
+      border-radius:18px;
+      font-weight:800;
+      font-size:18px;
+      padding:16px 14px;
     }
-    .btn.secondary{
-      background:#F1F2F4;
-      color:#222;
-    }
-    .btn.primary{
-      background: var(--accent, #111);
-      color:white;
-    }
-    .btn:disabled{
-      opacity:.45;
-      cursor:not-allowed;
-    }
-
-    /* --- Done / Result --- */
-    .panel{
-      background: rgba(255,255,255,0.92);
-      color:#111;
-      border-radius: 22px;
-      padding:14px;
-      box-shadow: var(--shadow);
-    }
-    .panel h2{
-      margin:0 0 10px;
-      font-size:20px;
-      letter-spacing:-0.2px;
-    }
-    .panel p{
-      margin:0 0 12px;
-      color:#333;
-      line-height:1.6;
+    .btnPrimary{
+      background:var(--btn);
+      color:var(--btnText);
+      width:100%;
+      padding:18px 16px;
+      border-radius:22px;
     }
 
-    .bars{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-top:10px;
-    }
-    .bar-row{
-      background:#fff;
-      border:1px solid rgba(0,0,0,0.08);
-      border-radius: 18px;
-      padding:10px 10px 12px;
-    }
-    .bar-head{
+    /* play */
+    .topBar{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .bar-title{
-      font-weight:900;
-      letter-spacing:-0.2px;
-    }
-    .bar-count{
-      font-size:13px;
-      color:#555;
+      margin:6px 0 12px;
+      color:var(--muted);
       font-weight:700;
-      white-space:nowrap;
+    }
+    .btnReset{
+      background:#ffd6d6;
+      color:#222;
+      font-size:16px;
+      padding:12px 14px;
+      border-radius:16px;
+      font-weight:900;
+    }
+    .card{
+      border-radius:24px;
+      padding:18px 18px 16px;
+      box-shadow: var(--shadow);
+      border:1px solid rgba(0,0,0,.06);
+      background: var(--card);
+    }
+    .badgeRow{display:flex; gap:10px; margin-bottom:14px}
+    .badge{
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(0,0,0,.06);
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:18px;
+    }
+    .cardText{
+      margin:0 0 18px;
+      font-size:30px;
+      font-weight:900;
+      letter-spacing:-.5px;
+      line-height:1.35;
+      min-height:120px;
+      display:flex;
+      align-items:flex-start;
+    }
+    .navBtns{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .btnGhost{
+      background:#eee;
+      color:#111;
+      font-weight:900;
+      padding:16px 12px;
+      border-radius:18px;
+    }
+    .btnYes{
+      background:#111;
+      color:#fff;
+      font-weight:900;
+      padding:16px 12px;
+      border-radius:18px;
     }
 
-    .bar-track{
+    /* done */
+    .doneCard{
+      background:#fff;
+      border-radius:24px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .doneTitle{margin:0 0 10px; font-size:24px; font-weight:900}
+    .doneDesc{margin:0 0 14px; color:#555; line-height:1.6}
+
+    /* result */
+    .resultCard{
+      background:#fff;
+      border-radius:24px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .resultTitle{margin:0 0 10px; font-size:24px; font-weight:900}
+    .driverBlock{margin:14px 0 18px}
+    .driverName{font-weight:900; font-size:18px; margin:0 0 10px}
+    .barLabel{display:flex; justify-content:space-between; color:#555; font-weight:800; margin:10px 0 6px}
+    .barTrack{
       width:100%;
-      height:12px;
-      background:#EEF0F3;
+      height:14px;
+      background:#eee;
       border-radius:999px;
       overflow:hidden;
-      margin-bottom:8px;
+      border:1px solid rgba(0,0,0,.05);
     }
-    .bar-fill{
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      background: var(--accent, #222);
-    }
-
-    .bar-track.over{
-      background:#F3F0F0;
-    }
-    .bar-fill.over{
-      filter:saturate(1.2) brightness(0.85);
-    }
-
-    .legend{
-      display:flex;
-      gap:10px;
-      font-size:12px;
-      color:#555;
-      font-weight:700;
-    }
-    .dot{
-      width:10px; height:10px; border-radius:999px; display:inline-block; margin-right:6px;
-      background: var(--accent, #222);
-    }
-    .dot.over{ filter:saturate(1.2) brightness(0.85); }
-
-    .footer-actions{ display:flex; gap:10px; margin-top:12px; }
+    .barFill{height:100%; width:0%}
+    .hint{color:#666; line-height:1.6; margin-top:6px}
   </style>
 </head>
 
 <body>
   <div class="wrap">
+    <div class="container">
 
-    <!-- Intro -->
-    <section id="screenIntro" class="intro">
-      <div class="intro-hero" aria-hidden="true"></div>
-
-      <div class="intro-card">
-        <div class="intro-title">드라이버 카드</div>
-        <p class="intro-desc">
-          한 장씩 넘기며 자신에게 해당되는 카드에서 해당됨을 누르세요.<br/>
-          해당되지 않으면 다음을 누르세요.
-        </p>
-        <div class="actions" style="padding:0; margin-top:10px;">
-          <button id="btnBegin" class="btn primary" style="--accent:#111;">시작</button>
+      <!-- INTRO -->
+      <section id="screenIntro" class="screen active">
+        <div class="hero" aria-hidden="true"></div>
+        <div class="introCard">
+          <h1 class="title">드라이브 카드</h1>
+          <p class="introText">
+            한 장씩 넘기며 자신에게 해당되는 카드에서 <span class="pill">해당됨</span>을 누르세요.<br/>
+            해당되지 않으면 <span class="pill">다음</span>을 누르세요.
+          </p>
+          <button id="btnBegin" class="btnPrimary" type="button">시작</button>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Play -->
-    <section id="screenPlay" class="hidden">
-      <div class="topbar">
-        <div id="progressText" class="progress">0/40</div>
-        <button id="btnReset" class="btn-mini">초기화</button>
-      </div>
-
-      <div id="cardBox" class="card" style="--accent:#111; --bg:#fff;">
-        <div class="meta">
-          <div id="mDriver" class="pill driver">-</div>
-          <div id="mType" class="pill type">-</div>
-        </div>
-        <div class="card-body">
-          <div id="qText" class="q-text">-</div>
-        </div>
-        <div class="actions">
-          <button id="btnPrev" class="btn secondary">이전</button>
-          <button id="btnYes" class="btn primary">해당됨</button>
-          <button id="btnNext" class="btn secondary">다음</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Done (after 40th answer) -->
-    <section id="screenDone" class="hidden">
-      <div class="panel">
-        <h2>완료</h2>
-        <p>모든 카드를 선택했습니다. 결과를 확인해 주세요.</p>
-        <div class="footer-actions">
-          <button id="btnToResult" class="btn primary" style="--accent:#111;">결과 보기</button>
-          <button id="btnBackToPlay" class="btn secondary">돌아가기</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Result -->
-    <section id="screenResult" class="hidden">
-      <div class="panel">
-        <h2>결과</h2>
-        <p style="margin-bottom:6px;">드라이버별 선택 개수(강점/과용)를 막대그래프로 표시합니다.</p>
-
-        <div class="legend">
-          <span><span class="dot"></span>강점</span>
-          <span><span class="dot over"></span>과용</span>
+      <!-- PLAY -->
+      <section id="screenPlay" class="screen">
+        <div class="topBar">
+          <div id="progressText">1/40</div>
+          <button id="btnReset" class="btnReset" type="button">초기화</button>
         </div>
 
-        <div id="bars" class="bars"></div>
+        <div id="cardBox" class="card">
+          <div class="badgeRow">
+            <div id="badgeDriver" class="badge">강해져야 해</div>
+            <div id="badgeType" class="badge">강점</div>
+          </div>
 
-        <div class="footer-actions">
-          <button id="btnRestart" class="btn secondary">다시하기</button>
+          <div id="cardText" class="cardText"></div>
+
+          <div class="navBtns">
+            <button id="btnPrev" class="btnGhost" type="button">이전</button>
+            <button id="btnYes" class="btnYes" type="button">해당됨</button>
+            <button id="btnNext" class="btnGhost" type="button">다음</button>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
+      <!-- DONE -->
+      <section id="screenDone" class="screen">
+        <div class="doneCard">
+          <h2 class="doneTitle">진단이 완료되었습니다</h2>
+          <p class="doneDesc">결과를 확인하려면 아래 버튼을 눌러주세요.</p>
+          <button id="btnShowResult" class="btnPrimary" type="button">결과 보기</button>
+        </div>
+      </section>
+
+      <!-- RESULT -->
+      <section id="screenResult" class="screen">
+        <div class="resultCard">
+          <h2 class="resultTitle">결과</h2>
+          <div id="resultArea"></div>
+          <button id="btnBackHome" class="btnPrimary" type="button" style="margin-top:14px;">처음으로</button>
+        </div>
+      </section>
+
+    </div>
   </div>
 
-  <script src="app.js"></script>
-  <script>
-    // Service worker (optional but recommended)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(()=>{});
-    }
-  </script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
