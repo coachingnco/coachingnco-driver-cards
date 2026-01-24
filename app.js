@@ -1,51 +1,277 @@
-const CARDS = [
-  // 1~8 강해져야 해
-  { driver:"strong", type:"strength", text:"어려운 상황에서도 감정에 크게 흔들리지 않고 버틴다." },
-  { driver:"strong", type:"strength", text:"위기일수록 침착하게 문제를 정리하고 해결하려 한다." },
-  { driver:"strong", type:"strength", text:"힘들어도 맡은 역할을 끝까지 책임지고 마무리한다." },
-  { driver:"strong", type:"strength", text:"감정에 휘둘리기보다 현실적으로 판단하고 행동한다." },
-  { driver:"strong", type:"overuse",  text:"도움을 요청하기보다 혼자 책임지고 해결하려는 편이다." },
-  { driver:"strong", type:"overuse",  text:"힘들어도 티를 내지 않고 괜찮은 척하며 감정을 숨기는 편이다." },
-  { driver:"strong", type:"overuse",  text:"약해 보일까 봐 고민을 나누는 것이 부담스러울 때가 있다." },
-  { driver:"strong", type:"overuse",  text:"무리하다고 느껴도 멈추지 못해 결국 지치거나 탈이 나는 경우가 있다." },
+const STORAGE_KEY = "driver_cards_v2";
 
-  // 9~16 완벽해야 해
-  { driver:"perfect", type:"strength", text:"정확하고 빈틈없이 일을 처리한다." },
-  { driver:"perfect", type:"strength", text:"무슨 일이든 대충 넘어가지 않고 확실하게 하려고 한다." },
-  { driver:"perfect", type:"strength", text:"세부적인 사항까지 꼼꼼하게 확인하여 일을 처리한다." },
-  { driver:"perfect", type:"strength", text:"실패에 대비해 제2의 대안을 마련하는 편이다." },
-  { driver:"perfect", type:"overuse",  text:"일이 완벽하게 진행되지 않으면 마음이 불편하다." },
-  { driver:"perfect", type:"overuse",  text:"자신 또는 타인에게 언제나 높은 기준을 적용한다." },
-  { driver:"perfect", type:"overuse",  text:"초기 계획 단계에서부터 필요 이상으로 많은 시간을 할애하는 경향이 있다." },
-  { driver:"perfect", type:"overuse",  text:"스스로 완벽해야 한다고 생각해 실수를 용납하기 힘들다." },
+const DRIVER_META = {
+  strong:  { name: "강해져야 해", color: "#d9ecff" },
+  perfect: { name: "완벽해야 해", color: "#ffe6ea" },
+  hurry:   { name: "서둘러야 해", color: "#e7ffe9" },
+  try:     { name: "열심히 해야 해", color: "#fff3d6" },
+  please:  { name: "기쁘게 해야 해", color: "#efe3ff" },
+};
 
-  // 17~24 서둘러야 해
-  { driver:"hurry", type:"strength", text:"약속된 시간 전에 일을 미리 끝내 놓는다." },
-  { driver:"hurry", type:"strength", text:"짧은 시간 내에 많은 일을 처리하는 편이다." },
-  { driver:"hurry", type:"strength", text:"무엇이든 빠르게 결정하고 빠르게 행동하는 편이다." },
-  { driver:"hurry", type:"strength", text:"해야 할 일이 많을 때 무엇부터 할지(우선순위)를 빨리 정한다." },
-  { driver:"hurry", type:"overuse",  text:"시간 안에 일을 해결하지 못할까 봐 불안해할 때가 있다." },
-  { driver:"hurry", type:"overuse",  text:"과제나 마감 시간이 다가올수록 마음이 조급해진다." },
-  { driver:"hurry", type:"overuse",  text:"시간에 대한 중압감을 많이 느끼는 편이다." },
-  { driver:"hurry", type:"overuse",  text:"일을 빨리 끝내려는 충동 때문에 실수나 수정사항이 자주 발생한다." },
+const TYPE_META = {
+  strength: { name: "강점" },
+  overuse:  { name: "과용" },
+};
 
-  // 25~32 열심히 해야 해
-  { driver:"tryhard", type:"strength", text:"어떤 일이든 쉽게 포기하지 않고 계속 시도하는 편이다." },
-  { driver:"tryhard", type:"strength", text:"부족한 부분이 보이면 연습하고 보완하려고 한다." },
-  { driver:"tryhard", type:"strength", text:"결과가 바로 나오지 않아도 꾸준히 노력하는 편이다." },
-  { driver:"tryhard", type:"strength", text:"실패해도 다시 시도하며 방법을 찾아가려 한다." },
-  { driver:"tryhard", type:"overuse",  text:"쉬지 않고 무언가를 계속해야 마음이 편하다." },
-  { driver:"tryhard", type:"overuse",  text:"무엇이든 열심히 하고 있어야 안심이 된다." },
-  { driver:"tryhard", type:"overuse",  text:"작은 일에도 열심히 하느라 에너지가 빨리 소진될 때가 있다." },
-  { driver:"tryhard", type:"overuse",  text:"많은 일을 시도하지만 정작 결과를 맺지 못하는 경우가 있다." },
+let cards = [];
+let idx = 0;
+let selected = new Set(); // 해당됨 card_id 저장
 
-  // 33~40 타인을 기쁘게 해
-  { driver:"please", type:"strength", text:"타인의 의견을 잘 들어주고 동의하며 관계를 부드럽게 만든다." },
-  { driver:"please", type:"strength", text:"깊은 배려심으로 다른 사람들이 무엇을 원하는지 잘 알아차린다." },
-  { driver:"please", type:"strength", text:"타인을 이해하고 공감하는 능력이 뛰어나다." },
-  { driver:"please", type:"strength", text:"타인의 기분을 상하게 하는 말과 행동을 피하려고 조심한다." },
-  { driver:"please", type:"overuse",  text:"내 의견이나 소신을 상대방에게 말하는 것이 힘들다." },
-  { driver:"please", type:"overuse",  text:"다른 사람을 비판하거나 피드백하는 것이 조심스러워 꺼려질 때가 있다." },
-  { driver:"please", type:"overuse",  text:"개인적인 일에 타인의 간섭이 있어도 그냥 내버려 두는 경우가 있다." },
-  { driver:"please", type:"overuse",  text:"갈등이 생길까 봐 불편한 이야기를 피하는 편이다." },
-];
+const $ = (id) => document.getElementById(id);
+
+function showScreen(screenId){
+  ["screenIntro","screenPlay","screenDone","screenResult"].forEach(id=>{
+    const el = $(id);
+    if(!el) return;
+    el.classList.toggle("active", id === screenId);
+  });
+  window.scrollTo(0,0); // “아래로 붙는 현상” 방지(항상 화면 위로)
+}
+
+async function loadCards(){
+  // 문장은 cards.json에 둠 (문장만 수정해도 app.js 안 깨짐)
+  const res = await fetch("cards.json?v=2", { cache: "no-store" });
+  if(!res.ok) throw new Error("cards.json을 불러오지 못했습니다.");
+  const data = await res.json();
+  // 정규화
+  cards = data.map((c, i)=>({
+    card_id: c.card_id || `C${i+1}`,
+    driver: c.driver,
+    type: c.type,
+    text: c.text,
+  }));
+  if(cards.length !== 40) {
+    // 40개가 아니면 바로 알려주기
+    console.warn("cards length:", cards.length);
+  }
+}
+
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    idx,
+    selected: Array.from(selected),
+  }));
+}
+
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return;
+  try{
+    const s = JSON.parse(raw);
+    idx = Number.isInteger(s.idx) ? s.idx : 0;
+    selected = new Set(Array.isArray(s.selected) ? s.selected : []);
+  }catch{}
+}
+
+function resetAll(){
+  idx = 0;
+  selected = new Set();
+  localStorage.removeItem(STORAGE_KEY);
+  renderCard();
+  showScreen("screenIntro");
+}
+
+function renderCard(){
+  if(!cards.length) return;
+
+  // 범위 보정
+  if(idx < 0) idx = 0;
+  if(idx > cards.length-1) idx = cards.length-1;
+
+  const c = cards[idx];
+  const dm = DRIVER_META[c.driver] || { name: c.driver, color: "#e9e9e9" };
+  const tm = TYPE_META[c.type] || { name: c.type };
+
+  $("progressText").textContent = `${idx+1}/${cards.length}`;
+  $("badgeDriver").textContent = dm.name;
+  $("badgeType").textContent = tm.name;
+  $("cardText").textContent = c.text;
+
+  // 카드 배경색(너무 연하면 조금 더 진하게)
+  $("cardBox").style.background = dm.color;
+
+  saveState();
+}
+
+function isLastCard(){
+  return idx === cards.length - 1;
+}
+
+function goPrev(){
+  idx -= 1;
+  renderCard();
+}
+function goNext(){
+  if(isLastCard()){
+    // 마지막 카드에서 “다음” 누르면 완료 화면으로
+    showScreen("screenDone");
+    return;
+  }
+  idx += 1;
+  renderCard();
+}
+
+function markYes(){
+  const c = cards[idx];
+  selected.add(c.card_id);
+  saveState();
+  // 마지막 카드에서 “해당됨” 누르면 완료 화면으로
+  if(isLastCard()){
+    showScreen("screenDone");
+    return;
+  }
+  idx += 1;
+  renderCard();
+}
+
+function countResults(){
+  const counts = {};
+  Object.keys(DRIVER_META).forEach(k=>{
+    counts[k] = { strength: 0, overuse: 0 };
+  });
+
+  // 해당됨만 카운트
+  for(const c of cards){
+    if(!selected.has(c.card_id)) continue;
+    if(!counts[c.driver]) counts[c.driver] = { strength:0, overuse:0 };
+    counts[c.driver][c.type] += 1;
+  }
+  return counts;
+}
+
+function renderResults(){
+  const counts = countResults();
+  const area = $("resultArea");
+  area.innerHTML = "";
+
+  Object.keys(DRIVER_META).forEach(driverKey=>{
+    const meta = DRIVER_META[driverKey];
+    const s = counts[driverKey]?.strength ?? 0;
+    const o = counts[driverKey]?.overuse ?? 0;
+
+    // 4개 만점 기준(강점 4 / 과용 4)
+    const sPct = Math.round((s/4)*100);
+    const oPct = Math.round((o/4)*100);
+
+    const block = document.createElement("div");
+    block.className = "driverBlock";
+
+    const name = document.createElement("div");
+    name.className = "driverName";
+    name.textContent = meta.name;
+    block.appendChild(name);
+
+    // 강점 bar
+    const label1 = document.createElement("div");
+    label1.className = "barLabel";
+    label1.innerHTML = `<span>강점</span><span>${s}/4</span>`;
+    block.appendChild(label1);
+
+    const track1 = document.createElement("div");
+    track1.className = "barTrack";
+    const fill1 = document.createElement("div");
+    fill1.className = "barFill";
+    fill1.style.background = meta.color;
+    fill1.style.width = `${sPct}%`;
+    track1.appendChild(fill1);
+    block.appendChild(track1);
+
+    // 과용 bar (같은 계열로 조금 진하게)
+    const label2 = document.createElement("div");
+    label2.className = "barLabel";
+    label2.innerHTML = `<span>과용</span><span>${o}/4</span>`;
+    block.appendChild(label2);
+
+    const track2 = document.createElement("div");
+    track2.className = "barTrack";
+    const fill2 = document.createElement("div");
+    fill2.className = "barFill";
+    fill2.style.background = shade(meta.color, -18);
+    fill2.style.width = `${oPct}%`;
+    track2.appendChild(fill2);
+    block.appendChild(track2);
+
+    const hint = document.createElement("div");
+    hint.className = "hint";
+    hint.textContent =
+      (s+o === 0)
+        ? "해당됨을 누른 문항이 아직 없습니다."
+        : "강점이 높으면 좋은 방향으로 쓰고 있는 편, 과용이 높으면 스트레스로 작동할 가능성이 큽니다.";
+    block.appendChild(hint);
+
+    area.appendChild(block);
+  });
+}
+
+function shade(hex, amt){
+  // 아주 간단한 색 진하게/연하게(대충 써도 충분)
+  // 입력이 rgb/기타면 그냥 원색 반환
+  if(!hex || !hex.startsWith("#")) return hex;
+  const c = hex.replace("#","");
+  if(c.length !== 6) return hex;
+  const num = parseInt(c, 16);
+  let r = (num >> 16) + amt;
+  let g = ((num >> 8) & 0x00FF) + amt;
+  let b = (num & 0x0000FF) + amt;
+  r = Math.max(0, Math.min(255, r));
+  g = Math.max(0, Math.min(255, g));
+  b = Math.max(0, Math.min(255, b));
+  return "#" + ((r<<16) | (g<<8) | b).toString(16).padStart(6,"0");
+}
+
+function wireEvents(){
+  $("btnBegin").addEventListener("click", ()=>{
+    showScreen("screenPlay");
+    renderCard();
+  });
+
+  $("btnPrev").addEventListener("click", goPrev);
+  $("btnNext").addEventListener("click", goNext);
+  $("btnYes").addEventListener("click", markYes);
+
+  $("btnReset").addEventListener("click", ()=>{
+    if(confirm("진단을 초기화할까요?")){
+      resetAll();
+    }
+  });
+
+  $("btnShowResult").addEventListener("click", ()=>{
+    renderResults();
+    showScreen("screenResult");
+  });
+
+  $("btnBackHome").addEventListener("click", ()=>{
+    showScreen("screenIntro");
+    window.scrollTo(0,0);
+  });
+
+  // 스와이프(좌/우로 다음/이전)
+  let startX = null;
+  document.addEventListener("touchstart", (e)=>{
+    if(!$("screenPlay").classList.contains("active")) return;
+    startX = e.touches[0].clientX;
+  }, { passive:true });
+
+  document.addEventListener("touchend", (e)=>{
+    if(!$("screenPlay").classList.contains("active")) return;
+    if(startX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const dx = endX - startX;
+    startX = null;
+    if(Math.abs(dx) < 40) return;
+    if(dx > 0) goPrev();
+    else goNext();
+  }, { passive:true });
+}
+
+(async function init(){
+  try{
+    loadState();
+    await loadCards();
+    wireEvents();
+    showScreen("screenIntro");
+  }catch(err){
+    alert(`초기화 오류: ${err.message}`);
+    console.error(err);
+  }
+})();
