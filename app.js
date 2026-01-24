@@ -1,276 +1,51 @@
-(() => {
-  const STORAGE_KEY = "ta_driver_pwa_v3"; // 버전 올려서 상태/캐시 꼬임 줄이기
+const CARDS = [
+  // 1~8 강해져야 해
+  { driver:"strong", type:"strength", text:"어려운 상황에서도 감정에 크게 흔들리지 않고 버틴다." },
+  { driver:"strong", type:"strength", text:"위기일수록 침착하게 문제를 정리하고 해결하려 한다." },
+  { driver:"strong", type:"strength", text:"힘들어도 맡은 역할을 끝까지 책임지고 마무리한다." },
+  { driver:"strong", type:"strength", text:"감정에 휘둘리기보다 현실적으로 판단하고 행동한다." },
+  { driver:"strong", type:"overuse",  text:"도움을 요청하기보다 혼자 책임지고 해결하려는 편이다." },
+  { driver:"strong", type:"overuse",  text:"힘들어도 티를 내지 않고 괜찮은 척하며 감정을 숨기는 편이다." },
+  { driver:"strong", type:"overuse",  text:"약해 보일까 봐 고민을 나누는 것이 부담스러울 때가 있다." },
+  { driver:"strong", type:"overuse",  text:"무리하다고 느껴도 멈추지 못해 결국 지치거나 탈이 나는 경우가 있다." },
 
-  const drivers = ["강해져야 해","완벽해야 해","서둘러야 해","열심히 해야 해","기쁘게 해야 해"];
+  // 9~16 완벽해야 해
+  { driver:"perfect", type:"strength", text:"정확하고 빈틈없이 일을 처리한다." },
+  { driver:"perfect", type:"strength", text:"무슨 일이든 대충 넘어가지 않고 확실하게 하려고 한다." },
+  { driver:"perfect", type:"strength", text:"세부적인 사항까지 꼼꼼하게 확인하여 일을 처리한다." },
+  { driver:"perfect", type:"strength", text:"실패에 대비해 제2의 대안을 마련하는 편이다." },
+  { driver:"perfect", type:"overuse",  text:"일이 완벽하게 진행되지 않으면 마음이 불편하다." },
+  { driver:"perfect", type:"overuse",  text:"자신 또는 타인에게 언제나 높은 기준을 적용한다." },
+  { driver:"perfect", type:"overuse",  text:"초기 계획 단계에서부터 필요 이상으로 많은 시간을 할애하는 경향이 있다." },
+  { driver:"perfect", type:"overuse",  text:"스스로 완벽해야 한다고 생각해 실수를 용납하기 힘들다." },
 
-  let cards = [];
-  let idx = 0;
-  let selected = new Set();
+  // 17~24 서둘러야 해
+  { driver:"hurry", type:"strength", text:"약속된 시간 전에 일을 미리 끝내 놓는다." },
+  { driver:"hurry", type:"strength", text:"짧은 시간 내에 많은 일을 처리하는 편이다." },
+  { driver:"hurry", type:"strength", text:"무엇이든 빠르게 결정하고 빠르게 행동하는 편이다." },
+  { driver:"hurry", type:"strength", text:"해야 할 일이 많을 때 무엇부터 할지(우선순위)를 빨리 정한다." },
+  { driver:"hurry", type:"overuse",  text:"시간 안에 일을 해결하지 못할까 봐 불안해할 때가 있다." },
+  { driver:"hurry", type:"overuse",  text:"과제나 마감 시간이 다가올수록 마음이 조급해진다." },
+  { driver:"hurry", type:"overuse",  text:"시간에 대한 중압감을 많이 느끼는 편이다." },
+  { driver:"hurry", type:"overuse",  text:"일을 빨리 끝내려는 충동 때문에 실수나 수정사항이 자주 발생한다." },
 
-  function $(id){ return document.getElementById(id); }
+  // 25~32 열심히 해야 해
+  { driver:"tryhard", type:"strength", text:"어떤 일이든 쉽게 포기하지 않고 계속 시도하는 편이다." },
+  { driver:"tryhard", type:"strength", text:"부족한 부분이 보이면 연습하고 보완하려고 한다." },
+  { driver:"tryhard", type:"strength", text:"결과가 바로 나오지 않아도 꾸준히 노력하는 편이다." },
+  { driver:"tryhard", type:"strength", text:"실패해도 다시 시도하며 방법을 찾아가려 한다." },
+  { driver:"tryhard", type:"overuse",  text:"쉬지 않고 무언가를 계속해야 마음이 편하다." },
+  { driver:"tryhard", type:"overuse",  text:"무엇이든 열심히 하고 있어야 안심이 된다." },
+  { driver:"tryhard", type:"overuse",  text:"작은 일에도 열심히 하느라 에너지가 빨리 소진될 때가 있다." },
+  { driver:"tryhard", type:"overuse",  text:"많은 일을 시도하지만 정작 결과를 맺지 못하는 경우가 있다." },
 
-  function showScreen(name){
-    ["screenIntro","screenPlay","screenResult"].forEach(s => {
-      const el = $(s);
-      if(!el) return;
-      el.classList.toggle("hidden", s !== name);
-    });
-  }
-
-  function driverClass(name){
-    return ({
-      "강해져야 해":"d-strong",
-      "완벽해야 해":"d-perfect",
-      "서둘러야 해":"d-hurry",
-      "열심히 해야 해":"d-try",
-      "기쁘게 해야 해":"d-please",
-    })[name] || "d-strong";
-  }
-
-  function barColor(name){
-    return ({
-      "강해져야 해":"var(--b-strong)",
-      "완벽해야 해":"var(--b-perfect)",
-      "서둘러야 해":"var(--b-hurry)",
-      "열심히 해야 해":"var(--b-try)",
-      "기쁘게 해야 해":"var(--b-please)",
-    })[name] || "var(--b-strong)";
-  }
-
-  function saveState(){
-    try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        idx,
-        selected: Array.from(selected),
-      }));
-    }catch(e){}
-  }
-
-  function loadState(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return;
-      const s = JSON.parse(raw);
-      idx = Number.isInteger(s.idx) ? s.idx : 0;
-      selected = new Set(Array.isArray(s.selected) ? s.selected : []);
-    }catch(e){}
-  }
-
-  async function loadCards(){
-    // service worker/브라우저 캐시 회피용: 쿼리 + no-store
-    const res = await fetch(`cards.json?v=${Date.now()}`, { cache: "no-store" });
-    if(!res.ok) throw new Error("cards.json을 불러오지 못했습니다.");
-    const data = await res.json();
-
-    if(!Array.isArray(data)) throw new Error("cards.json 형식이 배열이 아닙니다.");
-    // 필수 필드 점검
-    for(const c of data){
-      if(!c.card_id || !c.driver || !c.type || !c.text){
-        throw new Error("cards.json에 card_id/driver/type/text 누락된 항목이 있습니다.");
-      }
-    }
-
-    cards = data;
-
-    // 40장인지 점검(원하면 경고만)
-    if(cards.length !== 40){
-      console.warn("cards length =", cards.length, " (40이 아닙니다)");
-    }
-
-    if(idx < 0) idx = 0;
-    if(idx >= cards.length) idx = cards.length - 1;
-  }
-
-  function renderCard(){
-    if(!cards.length) return;
-
-    const c = cards[idx];
-
-    // 상단 진행
-    const prog = $("progressText");
-    if(prog) prog.textContent = `${idx+1}/${cards.length}`;
-
-    // 카드 배경색
-    const qCard = $("questionCard");
-    if(qCard){
-      qCard.classList.remove("d-strong","d-perfect","d-hurry","d-try","d-please");
-      qCard.classList.add(driverClass(c.driver));
-    }
-
-    // 메타
-    const pDriver = $("pillDriver");
-    const pType = $("pillType");
-    if(pDriver) pDriver.textContent = c.driver;
-    if(pType) pType.textContent = c.type === "스트레스" ? "과용" : c.type; // 표기만 과용으로
-
-    // 본문: 굵은 "나는" 제목 제거하고, 문장만 표시
-    const qText = $("qText");
-    if(qText) qText.textContent = c.text;
-
-    // 버튼 상태
-    const btnPrev = $("btnPrev");
-    const btnNext = $("btnNext");
-    if(btnPrev) btnPrev.disabled = (idx === 0);
-    if(btnNext) btnNext.disabled = (idx === cards.length - 1);
-
-    // 결과보기: 마지막 카드에서만 보이기
-    const btnResult = $("btnResult");
-    if(btnResult){
-      btnResult.style.display = (idx === cards.length - 1) ? "block" : "none";
-    }
-
-    saveState();
-  }
-
-  function goNext(){
-    if(idx < cards.length - 1){
-      idx += 1;
-      renderCard();
-    }
-  }
-
-  function goPrev(){
-    if(idx > 0){
-      idx -= 1;
-      renderCard();
-    }
-  }
-
-  function pickYes(){
-    const c = cards[idx];
-    selected.add(c.card_id);
-    saveState();
-
-    // 마지막 카드면 자동으로 결과 화면으로 넘어가게(원치 않으면 주석 처리)
-    if(idx === cards.length - 1){
-      showResult();
-      return;
-    }
-    goNext();
-  }
-
-  function resetAll(){
-    idx = 0;
-    selected = new Set();
-    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-    showScreen("screenIntro");
-  }
-
-  function showResult(){
-    showScreen("screenResult");
-    renderResults();
-  }
-
-  function renderResults(){
-    const picked = cards.filter(c => selected.has(c.card_id));
-
-    const perDriver = drivers.map(d => {
-      const strength = picked.filter(c => c.driver === d && c.type === "강점").length;
-      const stress   = picked.filter(c => c.driver === d && c.type === "스트레스").length;
-      return { driver:d, strength, stress };
-    });
-
-    const chart = $("chart");
-    if(!chart) return;
-
-    chart.innerHTML = perDriver.map(row => {
-      const sPct = Math.round((row.strength/4) * 100);
-      const tPct = Math.round((row.stress/4) * 100);
-      const color = barColor(row.driver);
-
-      return `
-        <div class="barRow">
-          <div class="barTitle">${row.driver}</div>
-
-          <div class="barLine">
-            <div class="barLabel">강점 ${row.strength}/4</div>
-            <div class="barTrack">
-              <div class="barFill" style="width:${sPct}%; background:${color};"></div>
-            </div>
-          </div>
-
-          <div class="barLine">
-            <div class="barLabel">과용 ${row.stress}/4</div>
-            <div class="barTrack">
-              <div class="barFill" style="width:${tPct}%; background:${color}; filter:saturate(1.15) brightness(0.92);"></div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function wireEvents(){
-    const btnBegin = $("btnBegin");
-    const btnReset = $("btnReset");
-    const btnPrev  = $("btnPrev");
-    const btnNext  = $("btnNext");
-    const btnYes   = $("btnYes");
-    const btnResult= $("btnResult");
-    const btnBack  = $("btnBack");
-
-    if(btnBegin){
-      btnBegin.addEventListener("click", () => {
-        showScreen("screenPlay");
-        renderCard();
-      });
-    }
-
-    if(btnReset) btnReset.addEventListener("click", resetAll);
-    if(btnPrev)  btnPrev.addEventListener("click", goPrev);
-    if(btnNext)  btnNext.addEventListener("click", goNext);
-    if(btnYes)   btnYes.addEventListener("click", pickYes);
-
-    if(btnResult){
-      btnResult.addEventListener("click", showResult);
-    }
-    if(btnBack){
-      btnBack.addEventListener("click", () => {
-        showScreen("screenPlay");
-        renderCard();
-      });
-    }
-
-    // 스와이프(모바일): 좌=다음, 우=이전
-    let startX = null;
-    document.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX;
-    }, { passive:true });
-
-    document.addEventListener("touchend", (e) => {
-      if(startX === null) return;
-      const endX = e.changedTouches[0].clientX;
-      const dx = endX - startX;
-      startX = null;
-
-      if(Math.abs(dx) < 40) return;
-
-      // intro/result 화면에서는 스와이프 무시
-      const playVisible = !$("screenPlay").classList.contains("hidden");
-      if(!playVisible) return;
-
-      if(dx < 0) goNext();
-      else goPrev();
-    }, { passive:true });
-  }
-
-  function registerSW(){
-    if(!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("sw.js").catch(() => {});
-  }
-
-  async function init(){
-    try{
-      loadState();
-      await loadCards();
-      wireEvents();
-      registerSW();
-      showScreen("screenIntro");
-    }catch(err){
-      alert(`초기화 오류: ${err.message}`);
-      console.error(err);
-    }
-  }
-
-  init();
-})();
+  // 33~40 타인을 기쁘게 해
+  { driver:"please", type:"strength", text:"타인의 의견을 잘 들어주고 동의하며 관계를 부드럽게 만든다." },
+  { driver:"please", type:"strength", text:"깊은 배려심으로 다른 사람들이 무엇을 원하는지 잘 알아차린다." },
+  { driver:"please", type:"strength", text:"타인을 이해하고 공감하는 능력이 뛰어나다." },
+  { driver:"please", type:"strength", text:"타인의 기분을 상하게 하는 말과 행동을 피하려고 조심한다." },
+  { driver:"please", type:"overuse",  text:"내 의견이나 소신을 상대방에게 말하는 것이 힘들다." },
+  { driver:"please", type:"overuse",  text:"다른 사람을 비판하거나 피드백하는 것이 조심스러워 꺼려질 때가 있다." },
+  { driver:"please", type:"overuse",  text:"개인적인 일에 타인의 간섭이 있어도 그냥 내버려 두는 경우가 있다." },
+  { driver:"please", type:"overuse",  text:"갈등이 생길까 봐 불편한 이야기를 피하는 편이다." },
+];
