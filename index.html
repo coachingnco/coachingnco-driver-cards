@@ -2,315 +2,344 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>드라이버 카드</title>
   <meta name="theme-color" content="#111111" />
-  <link rel="manifest" href="manifest.json" />
-  <title>드라이브 카드</title>
-
   <style>
     :root{
-      --bg: #f6f6f7;
-      --ink:#111;
+      --bg:#0f0f10;
+      --card:#ffffff;
+      --text:#111;
       --muted:#666;
-      --card:#fff;
-      --shadow: 0 12px 30px rgba(0,0,0,.10);
-      --radius: 22px;
-
-      /* 드라이버별 배경색: "조금 더 진하게" */
-      --c-strong:  #dfeeff;
-      --c-perfect: #ffe7b8;
-      --c-hurry:   #ffd0da;
-      --c-try:     #d8ffe0;
-      --c-please:  #e7dcff;
-
-      /* 드라이버별 라벨(막대) 색: 더 선명하게 */
-      --b-strong:  #4aa3ff;
-      --b-perfect: #ffb020;
-      --b-hurry:   #ff5a7a;
-      --b-try:     #2ecc71;
-      --b-please:  #8e62ff;
-
-      /* 인트로 타이틀 색: 진한 노란색 */
-      --title-yellow: #f4b400;
+      --shadow: 0 10px 30px rgba(0,0,0,.12);
+      --radius: 18px;
     }
 
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-    }
-    .wrap{
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    .hidden{ display:none; }
-
-    .card{
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
-
-    /* Intro */
-    #screenIntro{
-      min-height: calc(100vh - 32px);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(180deg, #0f0f10 0%, #141416 100%);
+      color:#fff;
+      min-height:100vh;
       display:flex;
-      flex-direction:column;
-      gap: 14px;
       justify-content:center;
+      padding:18px 12px 28px;
     }
 
+    .wrap{
+      width:100%;
+      max-width:460px;
+    }
+
+    .hidden{ display:none !important; }
+
+    /* --- Intro --- */
+    .intro{
+      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius: 22px;
+      padding:14px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
     .intro-hero{
       width:100%;
-      max-width: 420px;
-      height: 270px;
-      margin: 0 auto;
+      height:270px;
       border-radius: 18px;
       background-image: url('intro.png');
       background-size: cover;
       background-position: center;
-      pointer-events: none; /* 버튼 클릭 방해 방지 */
+      /* ✅ 이미지가 버튼 터치를 가로채지 않게 */
+      pointer-events:none;
     }
-
     .intro-card{
-      width:100%;
-      max-width: 420px;
-      margin: -44px auto 0;
-      border-radius: 22px;
-      background: rgba(255,255,255,.86);
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: 0 18px 40px rgba(0,0,0,.10);
-      padding: 18px 18px 20px;
-      backdrop-filter: blur(6px);
+      margin-top:12px;
+      background: rgba(255,255,255,0.92);
+      color:#111;
+      border-radius: 18px;
+      padding:14px 14px 12px;
+      box-shadow: var(--shadow);
+      position:relative;
+      z-index:2;
     }
-
     .intro-title{
-      font-size: 44px;
-      letter-spacing: -0.5px;
-      line-height: 1.05;
-      margin: 6px 0 10px;
-      color: var(--title-yellow);
-      font-weight: 900;
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:-0.3px;
+      margin:0 0 8px 0;
+      color:#F5C400; /* 진한 노란색 */
+    }
+    .intro-desc{
+      margin:0 0 12px 0;
+      line-height:1.6;
+      color:#333;
+      font-size:15px;
     }
 
-    .intro-sub{
-      font-size: 18px;
-      color: #222;
-      line-height: 1.55;
-      margin: 0 0 16px;
+    /* --- Common card --- */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 10px;
+      gap:10px;
+    }
+    .progress{
+      font-size:14px;
+      color:rgba(255,255,255,0.88);
+    }
+    .btn-mini{
+      border:none;
+      background: rgba(255,255,255,0.16);
+      color:#fff;
+      padding:8px 10px;
+      border-radius: 12px;
+      font-size:13px;
+      cursor:pointer;
     }
 
+    .card{
+      background: var(--card);
+      color: var(--text);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .meta{
+      display:flex;
+      gap:8px;
+      padding:12px 14px 0;
+      flex-wrap:wrap;
+    }
     .pill{
       display:inline-flex;
       align-items:center;
-      padding: 8px 12px;
+      padding:7px 10px;
       border-radius: 999px;
-      background: #eee;
-      color: #111;
-      font-size: 14px;
+      font-size:12px;
+      font-weight:700;
+      background: rgba(0,0,0,0.06);
+      color:#222;
     }
-    .pill.yellow{ background: #ffe08a; }
+    .pill.driver{
+      background: var(--accent, #222);
+      color:white;
+    }
+    .pill.type{
+      background: rgba(0,0,0,0.07);
+      color:#222;
+    }
 
-    .btnRow{ display:flex; gap:10px; }
-    button{
-      border:0;
-      border-radius: 16px;
-      padding: 14px 12px;
-      font-size: 18px;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
+    .card-body{
+      padding:12px 16px 16px;
     }
-    button:active{ transform: scale(.99); }
+    .q-text{
+      font-size:20px;
+      line-height:1.55;
+      letter-spacing:-0.2px;
+      margin:6px 0 0;
+      white-space:pre-line;
+    }
 
-    .primary{
-      background:#111;
-      color:#fff;
-      width:100%;
-      padding: 18px 12px;
-      border-radius: 20px;
-      font-size: 20px;
-    }
-    .ghost{
-      background:#ececec;
-      color:#111;
-      flex:1;
-    }
-    .danger{
-      background:#ffe2e6;
-      color:#111;
-      border-radius: 14px;
-      padding: 10px 14px;
-      font-size: 14px;
-    }
-    .muted{ color: var(--muted); font-size:14px; }
-
-    /* Play */
-    #topBar{
+    .actions{
       display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin: 8px 0 12px;
+      gap:10px;
+      padding:12px 14px 14px;
     }
-    #progressText{
-      font-size: 16px;
-      color:#333;
+    .btn{
+      flex:1;
+      border:none;
+      border-radius: 16px;
+      padding:12px 10px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .btn.secondary{
+      background:#F1F2F4;
+      color:#222;
+    }
+    .btn.primary{
+      background: var(--accent, #111);
+      color:white;
+    }
+    .btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
     }
 
-    .qCard{
-      border-radius: 24px;
-      padding: 18px;
+    /* --- Done / Result --- */
+    .panel{
+      background: rgba(255,255,255,0.92);
+      color:#111;
+      border-radius: 22px;
+      padding:14px;
       box-shadow: var(--shadow);
     }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:20px;
+      letter-spacing:-0.2px;
+    }
+    .panel p{
+      margin:0 0 12px;
+      color:#333;
+      line-height:1.6;
+    }
 
-    .metaRow{
+    .bars{
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom: 14px;
-    }
-    .metaPill{
-      background: rgba(255,255,255,.75);
-      border: 1px solid rgba(0,0,0,.06);
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 16px;
-      color:#111;
-    }
-
-    .qText{
-      font-size: 22px;
-      line-height: 1.55;
-      color:#111;
-      margin: 10px 0 18px;
-      white-space: pre-line;
-    }
-
-    .bigBtns{
-      display:flex;
+      flex-direction:column;
       gap:12px;
-      margin-top: 10px;
+      margin-top:10px;
     }
-    .bigBtns button{
-      flex:1;
-      padding: 18px 10px;
-      border-radius: 18px;
-      font-size: 20px;
-    }
-    .yes{
-      background:#111;
-      color:#fff;
-    }
-
-    #btnResult{
-      margin-top: 12px;
-      width:100%;
-      background:#e9e9e9;
-      color:#111;
-      padding: 18px 12px;
-      border-radius: 18px;
-      font-size: 20px;
-      display:none; /* 마지막 카드에서만 보이게 */
-    }
-
-    /* Driver background classes */
-    .d-strong  { background: var(--c-strong); }
-    .d-perfect { background: var(--c-perfect); }
-    .d-hurry   { background: var(--c-hurry); }
-    .d-try     { background: var(--c-try); }
-    .d-please  { background: var(--c-please); }
-
-    /* Result chart */
-    #chart{ display:flex; flex-direction:column; gap:14px; margin-top:14px; }
-    .barRow{
+    .bar-row{
       background:#fff;
-      border-radius:16px;
-      padding:14px;
-      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,0.08);
+      border-radius: 18px;
+      padding:10px 10px 12px;
     }
-    .barTitle{ font-size:16px; margin-bottom:10px; color:#111; }
-    .barLine{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
-    .barLabel{ font-size:13px; color:#333; }
-    .barTrack{ width:100%; height:14px; background:#eee; border-radius:999px; overflow:hidden; }
-    .barFill{ height:100%; border-radius:999px; }
-
-    .resultTop{
+    .bar-head{
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:10px;
+      margin-bottom:8px;
     }
-    .resultTitle{ font-size:22px; margin: 4px 0 0; }
+    .bar-title{
+      font-weight:900;
+      letter-spacing:-0.2px;
+    }
+    .bar-count{
+      font-size:13px;
+      color:#555;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .bar-track{
+      width:100%;
+      height:12px;
+      background:#EEF0F3;
+      border-radius:999px;
+      overflow:hidden;
+      margin-bottom:8px;
+    }
+    .bar-fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: var(--accent, #222);
+    }
+
+    .bar-track.over{
+      background:#F3F0F0;
+    }
+    .bar-fill.over{
+      filter:saturate(1.2) brightness(0.85);
+    }
+
+    .legend{
+      display:flex;
+      gap:10px;
+      font-size:12px;
+      color:#555;
+      font-weight:700;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px; display:inline-block; margin-right:6px;
+      background: var(--accent, #222);
+    }
+    .dot.over{ filter:saturate(1.2) brightness(0.85); }
+
+    .footer-actions{ display:flex; gap:10px; margin-top:12px; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
 
-    <!-- Intro Screen -->
-    <section id="screenIntro">
+    <!-- Intro -->
+    <section id="screenIntro" class="intro">
       <div class="intro-hero" aria-hidden="true"></div>
 
       <div class="intro-card">
-        <div class="intro-title">드라이브 카드</div>
-
-        <div class="intro-sub">
-          한 장씩 넘기며 자신에게 해당되는 카드에서
-          <span class="pill yellow">해당됨</span>
-          을 누르세요.<br/>
-          해당되지 않으면
-          <span class="pill yellow">다음</span>
-          을 누르세요.
+        <div class="intro-title">드라이버 카드</div>
+        <p class="intro-desc">
+          한 장씩 넘기며 자신에게 해당되는 카드에서 해당됨을 누르세요.<br/>
+          해당되지 않으면 다음을 누르세요.
+        </p>
+        <div class="actions" style="padding:0; margin-top:10px;">
+          <button id="btnBegin" class="btn primary" style="--accent:#111;">시작</button>
         </div>
-
-        <button id="btnBegin" class="primary" type="button">시작</button>
-        <div class="muted" style="margin-top:10px;">제한 없음 · 결과는 개인만 확인</div>
       </div>
     </section>
 
-    <!-- Play Screen -->
+    <!-- Play -->
     <section id="screenPlay" class="hidden">
-      <div id="topBar">
-        <div id="progressText">1/40</div>
-        <button id="btnReset" class="danger" type="button">초기화</button>
+      <div class="topbar">
+        <div id="progressText" class="progress">0/40</div>
+        <button id="btnReset" class="btn-mini">초기화</button>
       </div>
 
-      <div id="questionCard" class="qCard d-strong">
-        <div class="metaRow">
-          <div id="pillDriver" class="metaPill">강해져야 해</div>
-          <div id="pillType" class="metaPill">강점</div>
+      <div id="cardBox" class="card" style="--accent:#111; --bg:#fff;">
+        <div class="meta">
+          <div id="mDriver" class="pill driver">-</div>
+          <div id="mType" class="pill type">-</div>
         </div>
-
-        <div id="qText" class="qText">카드를 불러오는 중…</div>
-
-        <div class="bigBtns">
-          <button id="btnPrev" class="ghost" type="button">이전</button>
-          <button id="btnYes" class="yes" type="button">해당됨</button>
-          <button id="btnNext" class="ghost" type="button">다음</button>
+        <div class="card-body">
+          <div id="qText" class="q-text">-</div>
         </div>
-
-        <button id="btnResult" type="button">결과 보기</button>
+        <div class="actions">
+          <button id="btnPrev" class="btn secondary">이전</button>
+          <button id="btnYes" class="btn primary">해당됨</button>
+          <button id="btnNext" class="btn secondary">다음</button>
+        </div>
       </div>
     </section>
 
-    <!-- Result Screen -->
-    <section id="screenResult" class="hidden">
-      <div class="card">
-        <div class="resultTop">
-          <div class="resultTitle">결과</div>
-          <button id="btnBack" class="ghost" type="button" style="max-width:160px;">진단으로</button>
+    <!-- Done (after 40th answer) -->
+    <section id="screenDone" class="hidden">
+      <div class="panel">
+        <h2>완료</h2>
+        <p>모든 카드를 선택했습니다. 결과를 확인해 주세요.</p>
+        <div class="footer-actions">
+          <button id="btnToResult" class="btn primary" style="--accent:#111;">결과 보기</button>
+          <button id="btnBackToPlay" class="btn secondary">돌아가기</button>
         </div>
-        <div class="muted" style="margin-top:8px;">각 드라이버별 강점/과용(스트레스) 선택 수</div>
-        <div id="chart"></div>
+      </div>
+    </section>
+
+    <!-- Result -->
+    <section id="screenResult" class="hidden">
+      <div class="panel">
+        <h2>결과</h2>
+        <p style="margin-bottom:6px;">드라이버별 선택 개수(강점/과용)를 막대그래프로 표시합니다.</p>
+
+        <div class="legend">
+          <span><span class="dot"></span>강점</span>
+          <span><span class="dot over"></span>과용</span>
+        </div>
+
+        <div id="bars" class="bars"></div>
+
+        <div class="footer-actions">
+          <button id="btnRestart" class="btn secondary">다시하기</button>
+        </div>
       </div>
     </section>
 
   </div>
 
   <script src="app.js"></script>
+  <script>
+    // Service worker (optional but recommended)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    }
+  </script>
 </body>
 </html>
