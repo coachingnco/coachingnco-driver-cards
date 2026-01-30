@@ -7,18 +7,16 @@
   <title>드라이브 카드</title>
 
   <link rel="manifest" href="manifest.json" />
+
   <style>
     :root{
       --bg:#f6f7fb;
       --card:#ffffff;
       --text:#111318;
-      --muted:#6b7280;
       --line:rgba(17,19,24,.08);
 
       --shadow: 0 18px 45px rgba(0,0,0,.08);
       --radius-xl: 26px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
 
       --btn:#121212;
       --btnText:#ffffff;
@@ -43,17 +41,12 @@
       justify-content:center;
       padding: 18px 14px 36px;
     }
+    .wrap{ width:100%; max-width: 480px; }
 
-    .wrap{
-      width:100%;
-      max-width: 480px;
-    }
-
-    /* 화면 전환: 같은 페이지에 두 화면이 동시에 보이는 문제 방지 */
+    /* ✅ 화면 전환: 동시에 보이는 현상 방지 */
     .screen{ display:none; }
     .screen.active{ display:block; }
 
-    /* 공통 카드 */
     .panel{
       background:var(--card);
       border:1px solid var(--line);
@@ -62,11 +55,10 @@
       overflow:hidden;
     }
 
-    /* 인트로 상단 이미지 */
+    /* 인트로 이미지 */
     .hero{
       width:100%;
       height: 280px;
-      background: #fff;
       background-image: url('intro.png');
       background-size: cover;
       background-position: center;
@@ -76,9 +68,7 @@
       margin-bottom: 14px;
     }
 
-    .intro-panel{
-      padding: 22px 18px 18px;
-    }
+    .intro-panel{ padding: 22px 18px 18px; }
 
     .intro-title{
       margin: 0 0 10px;
@@ -93,8 +83,8 @@
       margin: 0;
       font-size: 18px;
       line-height: 1.65;
-      color: var(--text);
-      font-weight: 500;
+      color: rgba(17,19,24,.86);
+      font-weight: 600;
       letter-spacing: -0.01em;
     }
 
@@ -104,8 +94,8 @@
       justify-content:center;
       padding: 6px 14px;
       border-radius: 999px;
-      background: rgba(241,180,0,.30);
-      font-weight: 700;
+      background: rgba(241,180,0,.25);
+      font-weight: 800;
       white-space: nowrap;
     }
 
@@ -125,22 +115,24 @@
       padding: 18px 16px;
       border-radius: 999px;
       font-size: 20px;
-      font-weight: 700;
+      font-weight: 800;
       cursor:pointer;
       width:100%;
       box-shadow: 0 16px 34px rgba(0,0,0,.12);
     }
     .btn:active{ transform: translateY(1px); }
 
+    /* ✅ 시작 버튼 아래 작은 문구 */
     .brand{
-      margin-top: 8px;
+      margin-top: 6px;
       text-align:center;
       font-size: 12px;
       color: rgba(17,19,24,.55);
       letter-spacing: .02em;
+      font-weight: 650;
     }
 
-    /* 진행 화면 상단 */
+    /* 진행 화면 */
     .topbar{
       display:flex;
       align-items:center;
@@ -148,10 +140,10 @@
       padding: 6px 4px 14px;
     }
     .progress{
-      font-size: 28px;
-      font-weight: 800;
+      font-size: 26px;
+      font-weight: 850;
       letter-spacing: -0.03em;
-      color: rgba(17,19,24,.88);
+      color: rgba(17,19,24,.86);
     }
     .reset{
       border:none;
@@ -159,12 +151,11 @@
       padding: 12px 16px;
       border-radius: 16px;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       cursor:pointer;
-      color: rgba(17,19,24,.8);
+      color: rgba(17,19,24,.78);
     }
 
-    /* 카드(질문) */
     .card{
       padding: 18px 16px 18px;
       border-radius: var(--radius-xl);
@@ -173,69 +164,100 @@
       overflow:hidden;
     }
 
-    /* 드라이버별 톤(조금 더 진하게) */
-    .card[data-driver="strong"]  { background: #dfeeff; }
-    .card[data-driver="perfect"] { background: #ffe6d8; }
-    .card[data-driver="hurry"]   { background: #e3f6e6; }
-    .card[data-driver="try"]     { background: #fff1cf; }
-    .card[data-driver="please"]  { background: #efe6ff; }
+    /* 드라이버별 배경 (연하지만 더 선명하게) */
+    .card[data-driver="strong"]  { background: #d9ecff; }
+    .card[data-driver="perfect"] { background: #ffe0d3; }
+    .card[data-driver="hurry"]   { background: #d8f3dd; }
+    .card[data-driver="try"]     { background: #ffe7b8; }
+    .card[data-driver="please"]  { background: #eadcff; }
 
     .chips{
       display:flex;
       gap: 10px;
       align-items:center;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
     .chip{
-      background: rgba(255,255,255,.70);
-      border: 1px solid rgba(17,19,24,.08);
-      padding: 10px 16px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,19,24,.10);
+      padding: 9px 14px;
       border-radius: 999px;
-      font-size: 18px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 900;
       letter-spacing: -0.02em;
-      color: rgba(17,19,24,.86);
+      color: rgba(17,19,24,.84);
       white-space: nowrap;
     }
 
+    /* ✅ 본문 글자: 덜 진하고, 조금 작게 */
     .qtext{
       margin: 0 0 18px;
-      font-size: clamp(22px, 5.4vw, 28px);
-      line-height: 1.35;
+      font-size: clamp(20px, 5.1vw, 26px);
+      line-height: 1.38;
       letter-spacing: -0.02em;
-      color: rgba(17,19,24,.82);
-      font-weight: 650; /* 너무 진하지 않게 */
+      color: rgba(17,19,24,.76);
+      font-weight: 650;
       word-break: keep-all;
     }
 
     .actions{
       display:grid;
-      grid-template-columns: 1fr 1.05fr 1fr;
-      gap: 14px;
+      grid-template-columns: 1fr 1.08fr 1fr;
+      gap: 12px;
       align-items:stretch;
     }
 
     .btn2{
       border:none;
       border-radius: 18px;
-      padding: 18px 12px;
-      font-size: 20px;
-      font-weight: 800;
+      padding: 16px 10px;
+      font-size: 18px;
+      font-weight: 900;
       cursor:pointer;
       box-shadow: 0 14px 30px rgba(0,0,0,.10);
     }
 
     .btnPrev, .btnNext{
       background: rgba(240,240,240,.85);
-      color: rgba(17,19,24,.86);
+      color: rgba(17,19,24,.84);
     }
 
+    /* ✅ 해당됨: 한 줄 고정 */
     .btnYes{
       background: var(--accent, #c9d8ff);
-      color: rgba(17,19,24,.88);
-      white-space: nowrap; /* “해당됨” 한 줄 고정 */
+      color: rgba(17,19,24,.86);
+      white-space: nowrap;
     }
 
+    /* DONE 화면 */
+    .done-panel{
+      padding: 20px 18px;
+      text-align:center;
+    }
+    .done-title{
+      margin:0 0 10px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing:-0.02em;
+      color: rgba(17,19,24,.86);
+    }
+    .done-text{
+      margin:0 0 16px;
+      color: rgba(17,19,24,.62);
+      font-size: 16px;
+      line-height: 1.6;
+      font-weight: 600;
+    }
+
+    /* RESULT 기본 */
+    .result-panel{ padding: 18px 16px 18px; }
+    .result-title{
+      margin: 0 0 12px;
+      font-size: 26px;
+      font-weight: 950;
+      letter-spacing: -0.03em;
+    }
     .footer-actions{
       margin-top: 14px;
       display:flex;
@@ -245,9 +267,9 @@
       flex:1;
       border:none;
       border-radius: 18px;
-      padding: 18px 14px;
-      font-size: 20px;
-      font-weight: 800;
+      padding: 16px 14px;
+      font-size: 18px;
+      font-weight: 900;
       background: rgba(240,240,240,.85);
       color: rgba(17,19,24,.86);
       cursor:pointer;
@@ -258,89 +280,11 @@
       color: var(--btnText);
     }
 
-    /* 완료 화면 */
-    .done-panel{
-      padding: 20px 18px;
-      text-align:center;
-    }
-    .done-title{
-      margin:0 0 10px;
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing:-0.02em;
-      color: rgba(17,19,24,.88);
-    }
-    .done-text{
-      margin:0 0 16px;
-      color: rgba(17,19,24,.65);
-      font-size: 16px;
-      line-height: 1.6;
-      font-weight: 500;
-    }
-
-    /* 결과 화면 */
-    .result-panel{
-      padding: 18px 16px 18px;
-    }
-    .result-title{
-      margin: 0 0 12px;
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-    }
-    .block{
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(17,19,24,.08);
-    }
-    .h2{
-      margin: 0 0 10px;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-    }
-
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      margin: 10px 0 8px;
-    }
-    .label{
-      font-size: 18px;
-      font-weight: 800;
-      color: rgba(17,19,24,.70);
-      letter-spacing: -0.01em;
-      white-space: nowrap;
-    }
-    .score{
-      font-size: 18px;
-      font-weight: 900;
-      color: rgba(17,19,24,.70);
-      white-space: nowrap;
-    }
-
-    .bar{
-      width:100%;
-      height: 18px;
-      background: rgba(17,19,24,.10);
-      border-radius: 999px;
-      overflow:hidden;
-    }
-    .fill{
-      height:100%;
-      width:0%;
-      background: var(--accent, #c9d8ff);
-      border-radius: 999px;
-    }
-
-    /* 모바일에서 더 안정적인 레이아웃 */
+    /* 모바일 더 안정 */
     @media (max-width: 380px){
       .hero{ height: 250px; }
-      .chip{ font-size: 16px; padding: 9px 14px; }
-      .btn2{ font-size: 18px; }
-      .wide{ font-size: 18px; }
+      .btn2{ font-size: 17px; padding: 15px 10px; }
+      .wide{ font-size: 17px; padding: 15px 12px; }
     }
   </style>
 </head>
@@ -374,7 +318,7 @@
           <button id="btnReset" class="reset" type="button">초기화</button>
         </div>
 
-        <div id="card" class="card" data-driver="strong" style="--accent:#c9d8ff">
+        <div id="card" class="card" data-driver="strong" style="--accent:#bcd8ff">
           <div class="chips">
             <div id="chipDriver" class="chip">강해져야 해</div>
             <div id="chipType" class="chip">강점</div>
@@ -390,7 +334,7 @@
         </div>
       </section>
 
-      <!-- DONE (40장 완료 후 “결과 보기” 버튼만 있는 화면) -->
+      <!-- DONE -->
       <section id="screenDone" class="screen">
         <div class="panel done-panel">
           <div class="done-title">완료</div>
@@ -399,7 +343,7 @@
         </div>
       </section>
 
-      <!-- RESULT -->
+      <!-- RESULT (그래프/요약은 다음 단계에서) -->
       <section id="screenResult" class="screen">
         <div class="panel result-panel">
           <div class="result-title">결과</div>
