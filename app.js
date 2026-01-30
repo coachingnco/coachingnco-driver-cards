@@ -1,12 +1,4 @@
-/* Coaching&Co Driver Cards - PWA (single page) */
-
 const STORAGE_KEY = "coachingnco_driver_cards_v2";
-
-/**
- * cards.json이 있으면 그걸 우선 로드하고,
- * 없거나 실패하면 DEFAULT_CARDS로 동작하도록 해둠.
- * (너는 나중에 cards.json만 수정해도 바로 반영 가능)
- */
 
 const DRIVERS = [
   { key: "strong",  label: "강해져야 해",  accent: "#bcd8ff" },
@@ -16,13 +8,10 @@ const DRIVERS = [
   { key: "please",  label: "기쁘게 해야 해", accent: "#d7c4ff" },
 ];
 
-const TYPE_LABEL = {
-  strength: "강점",
-  overuse: "과용",
-};
+const TYPE_LABEL = { strength: "강점", overuse: "과용" };
 
-const DEFAULT_CARDS = [
-  // 1~8 강해져야 해
+const CARDS = [
+  // 강해져야 해 1~8
   { driver: "strong", type: "strength", text: "어려운 상황에서도 감정에 크게 흔들리지 않고 버틴다." },
   { driver: "strong", type: "strength", text: "위기일수록 침착하게 문제를 정리하고 해결하려 한다." },
   { driver: "strong", type: "strength", text: "힘들어도 맡은 역할을 끝까지 책임지고 마무리한다." },
@@ -32,7 +21,7 @@ const DEFAULT_CARDS = [
   { driver: "strong", type: "overuse",  text: "약해 보일까 봐 고민을 나누는 것이 부담스러울 때가 있다." },
   { driver: "strong", type: "overuse",  text: "무리하다고 느껴도 멈추지 못해 결국 지치거나 탈이 나는 경우가 있다." },
 
-  // 9~16 완벽해야 해
+  // 완벽해야 해 9~16
   { driver: "perfect", type: "strength", text: "정확하고 빈틈없이 일을 처리한다." },
   { driver: "perfect", type: "strength", text: "무슨 일이든 대충 넘어가지 않고 확실하게 하려고 한다." },
   { driver: "perfect", type: "strength", text: "세부적인 사항까지 꼼꼼하게 확인하여 일을 처리한다." },
@@ -42,7 +31,7 @@ const DEFAULT_CARDS = [
   { driver: "perfect", type: "overuse",  text: "초기 계획 단계에서부터 필요 이상으로 많은 시간을 할애하는 경향이 있다." },
   { driver: "perfect", type: "overuse",  text: "스스로 완벽해야 한다고 생각해 실수를 용납하기 힘들다." },
 
-  // 17~24 서둘러야 해
+  // 서둘러야 해 17~24
   { driver: "hurry", type: "strength", text: "약속된 시간 전에 일을 미리 끝내 놓는다." },
   { driver: "hurry", type: "strength", text: "짧은 시간 내에 많은 일을 처리하는 편이다." },
   { driver: "hurry", type: "strength", text: "무엇이든 빠르게 결정하고 빠르게 행동하는 편이다." },
@@ -52,7 +41,7 @@ const DEFAULT_CARDS = [
   { driver: "hurry", type: "overuse",  text: "시간에 대한 중압감을 많이 느끼는 편이다." },
   { driver: "hurry", type: "overuse",  text: "일을 빨리 끝내려는 충동 때문에 실수나 수정사항이 자주 발생한다." },
 
-  // 25~32 열심히 해야 해
+  // 열심히 해야 해 25~32
   { driver: "try", type: "strength", text: "어떤 일이든 쉽게 포기하지 않고 계속 시도하는 편이다." },
   { driver: "try", type: "strength", text: "부족한 부분이 보이면 연습하고 보완하려고 한다." },
   { driver: "try", type: "strength", text: "결과가 바로 나오지 않아도 꾸준히 노력하는 편이다." },
@@ -62,7 +51,7 @@ const DEFAULT_CARDS = [
   { driver: "try", type: "overuse",  text: "결과보다 노력하는 자세가 더 중요하다고 생각하는 편이다." },
   { driver: "try", type: "overuse",  text: "많은 일을 시도하지만 정작 결과를 맺지 못하는 경우가 있다." },
 
-  // 33~40 기쁘게 해야 해
+  // 기쁘게 해야 해 33~40
   { driver: "please", type: "strength", text: "타인의 의견을 잘 들어주고 동의하며 관계를 부드럽게 만든다." },
   { driver: "please", type: "strength", text: "깊은 배려심으로 다른 사람들이 무엇을 원하는지 잘 알아차린다." },
   { driver: "please", type: "strength", text: "타인을 이해하고 공감하는 능력이 뛰어나다." },
@@ -73,26 +62,22 @@ const DEFAULT_CARDS = [
   { driver: "please", type: "overuse",  text: "갈등이 생길까 봐 불편한 이야기를 피하는 편이다." },
 ];
 
-let cards = [];
-let idx = 0; // 현재 카드 index
-let selected = new Set(); // “해당됨” 누른 카드 index 저장
+let idx = 0;
+let selected = new Set();
 
 function $(id){ return document.getElementById(id); }
 
 function showScreen(id){
-  const screens = ["screenIntro","screenPlay","screenDone","screenResult"];
-  screens.forEach(s => $(s).classList.remove("active"));
+  ["screenIntro","screenPlay","screenDone","screenResult"].forEach(s => $(s).classList.remove("active"));
   $(id).classList.add("active");
-  // 모바일에서 “아래로 같이 보이는 느낌” 방지: 화면 전환 시 항상 맨 위로
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
 function saveState(){
-  const payload = {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
     idx,
     selected: Array.from(selected),
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }));
 }
 
 function loadState(){
@@ -102,65 +87,38 @@ function loadState(){
     const s = JSON.parse(raw);
     idx = Number.isInteger(s.idx) ? s.idx : 0;
     selected = new Set(Array.isArray(s.selected) ? s.selected : []);
-  }catch{
-    // ignore
-  }
+  }catch{}
 }
 
 function resetAll(){
   idx = 0;
   selected = new Set();
   localStorage.removeItem(STORAGE_KEY);
-  renderCard();
   showScreen("screenIntro");
-}
-
-async function loadCards(){
-  try{
-    const res = await fetch("cards.json", { cache: "no-store" });
-    if(!res.ok) throw new Error("no cards.json");
-    const data = await res.json();
-    // 기대 형식: [{ driver:"strong", type:"strength", text:"..." }, ...]
-    if(!Array.isArray(data) || data.length < 40) throw new Error("invalid cards.json");
-    cards = data;
-  }catch{
-    cards = DEFAULT_CARDS;
-  }
 }
 
 function driverMeta(key){
   return DRIVERS.find(d => d.key === key) || DRIVERS[0];
 }
 
-function clampIndex(){
-  if(idx < 0) idx = 0;
-  if(idx > cards.length - 1) idx = cards.length - 1;
-}
-
-function setAccentOnCard(driverKey){
-  const meta = driverMeta(driverKey);
-  const el = $("card");
-  el.dataset.driver = meta.key;
-  el.style.setProperty("--accent", meta.accent);
-}
-
 function renderCard(){
-  clampIndex();
-  const c = cards[idx];
+  if(idx < 0) idx = 0;
+  if(idx > CARDS.length - 1) idx = CARDS.length - 1;
+
+  const c = CARDS[idx];
   const meta = driverMeta(c.driver);
 
-  $("progress").textContent = `${idx + 1}/${cards.length}`;
+  $("progress").textContent = `${idx + 1}/${CARDS.length}`;
   $("chipDriver").textContent = meta.label;
   $("chipType").textContent = TYPE_LABEL[c.type] || "강점";
   $("qtext").textContent = c.text;
 
-  setAccentOnCard(c.driver);
+  const cardEl = $("card");
+  cardEl.dataset.driver = meta.key;
+  cardEl.style.setProperty("--accent", meta.accent);
 
-  // 버튼 상태
   $("btnPrev").disabled = (idx === 0);
   $("btnPrev").style.opacity = (idx === 0) ? 0.45 : 1;
-
-  // 마지막 카드에서는 Next/Yes 누르면 Done 화면으로 이동하도록 처리
 }
 
 function gotoDone(){
@@ -169,10 +127,7 @@ function gotoDone(){
 }
 
 function nextCard(){
-  if(idx >= cards.length - 1){
-    gotoDone();
-    return;
-  }
+  if(idx >= CARDS.length - 1){ gotoDone(); return; }
   idx += 1;
   saveState();
   renderCard();
@@ -192,20 +147,15 @@ function markSelected(){
 }
 
 function computeResults(){
-  // 결과: driver별 strength/overuse 각각 0~4
   const result = {};
-  DRIVERS.forEach(d => {
-    result[d.key] = { strength: 0, overuse: 0 };
-  });
+  DRIVERS.forEach(d => result[d.key] = { strength:0, overuse:0 });
 
   selected.forEach(i => {
-    const c = cards[i];
+    const c = CARDS[i];
     if(!c) return;
-    if(!result[c.driver]) result[c.driver] = { strength: 0, overuse: 0 };
     if(c.type === "strength") result[c.driver].strength += 1;
-    if(c.type === "overuse") result[c.driver].overuse += 1;
+    if(c.type === "overuse")  result[c.driver].overuse  += 1;
   });
-
   return result;
 }
 
@@ -213,66 +163,35 @@ function renderResults(){
   const r = computeResults();
   const wrap = $("resultWrap");
   wrap.innerHTML = "";
-
   DRIVERS.forEach(d => {
-    const s = r[d.key]?.strength ?? 0;
-    const o = r[d.key]?.overuse ?? 0;
-
-    const block = document.createElement("div");
-    block.className = "block";
-
-    const h2 = document.createElement("div");
-    h2.className = "h2";
-    h2.textContent = d.label;
-
-    const row1 = document.createElement("div");
-    row1.className = "row";
-    row1.innerHTML = `<div class="label">강점</div><div class="score">${s}/4</div>`;
-
-    const bar1 = document.createElement("div");
-    bar1.className = "bar";
-    const fill1 = document.createElement("div");
-    fill1.className = "fill";
-    fill1.style.setProperty("--accent", d.accent);
-    fill1.style.background = d.accent;
-    fill1.style.width = `${(s/4)*100}%`;
-    bar1.appendChild(fill1);
-
-    const row2 = document.createElement("div");
-    row2.className = "row";
-    row2.innerHTML = `<div class="label">과용</div><div class="score">${o}/4</div>`;
-
-    const bar2 = document.createElement("div");
-    bar2.className = "bar";
-    const fill2 = document.createElement("div");
-    fill2.className = "fill";
-    fill2.style.background = d.accent;
-    fill2.style.width = `${(o/4)*100}%`;
-    bar2.appendChild(fill2);
-
-    block.appendChild(h2);
-    block.appendChild(row1);
-    block.appendChild(bar1);
-    block.appendChild(row2);
-    block.appendChild(bar2);
-
-    wrap.appendChild(block);
+    const s = r[d.key].strength;
+    const o = r[d.key].overuse;
+    const div = document.createElement("div");
+    div.style.margin = "10px 0";
+    div.style.padding = "12px 14px";
+    div.style.borderRadius = "16px";
+    div.style.border = "1px solid rgba(17,19,24,.08)";
+    div.style.background = "rgba(255,255,255,.75)";
+    div.innerHTML = `<div style="font-weight:900; font-size:18px; margin-bottom:6px;">${d.label}</div>
+      <div style="color:rgba(17,19,24,.70); font-weight:800;">강점 ${s}/4 · 과용 ${o}/4</div>`;
+    wrap.appendChild(div);
   });
 }
 
 function wireEvents(){
-  $("btnBegin").addEventListener("click", () => {
-    // 시작 -> 카드 화면으로 “전환”
-    showScreen("screenPlay");
-    renderCard();
-  });
+  const btn = $("btnBegin");
+  const go = () => { showScreen("screenPlay"); renderCard(); };
 
-  $("btnPrev").addEventListener("click", () => prevCard());
-  $("btnNext").addEventListener("click", () => nextCard());
-  $("btnYes").addEventListener("click", () => markSelected());
+  // ✅ 모바일 터치 안정화
+  btn.addEventListener("click", go);
+  btn.addEventListener("touchend", (e) => { e.preventDefault(); go(); }, { passive:false });
 
-  $("btnReset").addEventListener("click", () => resetAll());
-  $("btnReset2").addEventListener("click", () => resetAll());
+  $("btnPrev").addEventListener("click", prevCard);
+  $("btnNext").addEventListener("click", nextCard);
+  $("btnYes").addEventListener("click", markSelected);
+
+  $("btnReset").addEventListener("click", resetAll);
+  $("btnReset2").addEventListener("click", resetAll);
 
   $("btnGoResult").addEventListener("click", () => {
     renderResults();
@@ -280,46 +199,13 @@ function wireEvents(){
   });
 
   $("btnBack").addEventListener("click", () => {
-    // 결과 -> 다시 카드로
     showScreen("screenPlay");
     renderCard();
   });
-
-  // 스와이프(선택사항): 좌/우로 넘기기
-  let startX = null;
-  document.addEventListener("touchstart", (e) => {
-    if(!$("screenPlay").classList.contains("active")) return;
-    startX = e.touches[0].clientX;
-  }, { passive:true });
-
-  document.addEventListener("touchend", (e) => {
-    if(!$("screenPlay").classList.contains("active")) return;
-    if(startX === null) return;
-    const endX = e.changedTouches[0].clientX;
-    const dx = endX - startX;
-    startX = null;
-    if(Math.abs(dx) < 50) return;
-    if(dx > 0) prevCard();
-    else nextCard();
-  }, { passive:true });
 }
 
-function registerSW(){
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("sw.js").catch(() => {});
-  }
-}
-
-(async function init(){
-  await loadCards();
+(function init(){
   loadState();
   wireEvents();
-  registerSW();
-
-  // 첫 화면은 무조건 Intro
   showScreen("screenIntro");
-
-  // idx가 이미 마지막을 넘어간 상태로 저장됐을 수 있으니 보정
-  if(idx < 0) idx = 0;
-  if(idx > cards.length - 1) idx = cards.length - 1;
 })();
