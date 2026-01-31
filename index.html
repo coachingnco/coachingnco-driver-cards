@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
   <title>드라이브 카드</title>
-
   <link rel="manifest" href="manifest.json" />
 
   <style>
@@ -14,14 +13,13 @@
       --card:#ffffff;
       --text:#111318;
       --line:rgba(17,19,24,.08);
-
       --shadow: 0 18px 45px rgba(0,0,0,.08);
       --radius-xl: 26px;
 
       --btn:#121212;
       --btnText:#ffffff;
 
-      --yellow:#f1b400; /* 인트로 제목 노랑 */
+      --yellow:#f1b400;
     }
 
     *{box-sizing:border-box}
@@ -41,9 +39,8 @@
       justify-content:center;
       padding: 18px 14px 36px;
     }
-    .wrap{ width:100%; max-width: 480px; }
+    .wrap{ width:100%; max-width: 520px; }
 
-    /* ✅ 화면 전환: 동시에 보이는 현상 방지 */
     .screen{ display:none; }
     .screen.active{ display:block; }
 
@@ -55,7 +52,6 @@
       overflow:hidden;
     }
 
-    /* 인트로 이미지 */
     .hero{
       width:100%;
       height: 280px;
@@ -76,7 +72,7 @@
       line-height: 1.02;
       letter-spacing: -0.02em;
       color: var(--yellow);
-      font-weight: 800;
+      font-weight: 820;
     }
 
     .intro-text{
@@ -84,7 +80,7 @@
       font-size: 18px;
       line-height: 1.65;
       color: rgba(17,19,24,.86);
-      font-weight: 600;
+      font-weight: 650;
       letter-spacing: -0.01em;
     }
 
@@ -115,14 +111,13 @@
       padding: 18px 16px;
       border-radius: 999px;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 820;
       cursor:pointer;
       width:100%;
       box-shadow: 0 16px 34px rgba(0,0,0,.12);
     }
     .btn:active{ transform: translateY(1px); }
 
-    /* ✅ 시작 버튼 아래 작은 문구 */
     .brand{
       margin-top: 6px;
       text-align:center;
@@ -132,7 +127,6 @@
       font-weight: 650;
     }
 
-    /* 진행 화면 */
     .topbar{
       display:flex;
       align-items:center;
@@ -141,7 +135,7 @@
     }
     .progress{
       font-size: 26px;
-      font-weight: 850;
+      font-weight: 860;
       letter-spacing: -0.03em;
       color: rgba(17,19,24,.86);
     }
@@ -151,7 +145,7 @@
       padding: 12px 16px;
       border-radius: 16px;
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 820;
       cursor:pointer;
       color: rgba(17,19,24,.78);
     }
@@ -164,12 +158,11 @@
       overflow:hidden;
     }
 
-    /* 드라이버별 배경 (연하지만 더 선명하게) */
-    .card[data-driver="strong"]  { background: #d9ecff; }
-    .card[data-driver="perfect"] { background: #ffe0d3; }
-    .card[data-driver="hurry"]   { background: #d8f3dd; }
-    .card[data-driver="try"]     { background: #ffe7b8; }
-    .card[data-driver="please"]  { background: #eadcff; }
+    .card[data-driver="strong"]  { background: #cfe8ff; }
+    .card[data-driver="perfect"] { background: #ffd9cf; }
+    .card[data-driver="hurry"]   { background: #ccf0d4; }
+    .card[data-driver="try"]     { background: #ffe2a8; }
+    .card[data-driver="please"]  { background: #e2d2ff; }
 
     .chips{
       display:flex;
@@ -190,7 +183,6 @@
       white-space: nowrap;
     }
 
-    /* ✅ 본문 글자: 덜 진하고, 조금 작게 */
     .qtext{
       margin: 0 0 18px;
       font-size: clamp(20px, 5.1vw, 26px);
@@ -223,14 +215,12 @@
       color: rgba(17,19,24,.84);
     }
 
-    /* ✅ 해당됨: 한 줄 고정 */
     .btnYes{
       background: var(--accent, #c9d8ff);
       color: rgba(17,19,24,.86);
       white-space: nowrap;
     }
 
-    /* DONE 화면 */
     .done-panel{
       padding: 20px 18px;
       text-align:center;
@@ -250,14 +240,80 @@
       font-weight: 600;
     }
 
-    /* RESULT 기본 */
     .result-panel{ padding: 18px 16px 18px; }
     .result-title{
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       font-size: 26px;
       font-weight: 950;
       letter-spacing: -0.03em;
     }
+
+    .guide{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      border-radius: 18px;
+      padding: 12px 12px;
+      color: rgba(17,19,24,.72);
+      line-height: 1.55;
+      font-size: 14px;
+      font-weight: 640;
+    }
+
+    .block{
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.78);
+      padding: 12px 12px;
+      overflow:hidden;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+
+    .h2{
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+      color: rgba(17,19,24,.86);
+      margin: 0 0 8px;
+    }
+
+    .metaLine{
+      margin-top: 8px;
+      color: rgba(17,19,24,.70);
+      font-size: 14px;
+      line-height: 1.55;
+      font-weight: 650;
+    }
+
+    .bar{
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(17,19,24,.10);
+      overflow:hidden;
+      margin: 8px 0 10px;
+    }
+    .fill{
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: var(--accent, #c9d8ff);
+    }
+
+    .labels{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-size: 13px;
+      color: rgba(17,19,24,.62);
+      font-weight: 700;
+    }
+
     .footer-actions{
       margin-top: 14px;
       display:flex;
@@ -280,7 +336,6 @@
       color: var(--btnText);
     }
 
-    /* 모바일 더 안정 */
     @media (max-width: 380px){
       .hero{ height: 250px; }
       .btn2{ font-size: 17px; padding: 15px 10px; }
@@ -293,7 +348,6 @@
   <div class="app">
     <div class="wrap">
 
-      <!-- INTRO -->
       <section id="screenIntro" class="screen active">
         <div class="hero" aria-label="intro image"></div>
 
@@ -311,7 +365,6 @@
         </div>
       </section>
 
-      <!-- PLAY -->
       <section id="screenPlay" class="screen">
         <div class="topbar">
           <div id="progress" class="progress">1/40</div>
@@ -334,7 +387,6 @@
         </div>
       </section>
 
-      <!-- DONE -->
       <section id="screenDone" class="screen">
         <div class="panel done-panel">
           <div class="done-title">완료</div>
@@ -343,10 +395,12 @@
         </div>
       </section>
 
-      <!-- RESULT (그래프/요약은 다음 단계에서) -->
       <section id="screenResult" class="screen">
         <div class="panel result-panel">
           <div class="result-title">결과</div>
+
+          <div id="guideBox" class="guide"></div>
+
           <div id="resultWrap"></div>
 
           <div class="footer-actions">
