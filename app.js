@@ -1,11 +1,11 @@
-const STORAGE_KEY = "coachingnco_driver_cards_v2";
+const STORAGE_KEY = "coachingnco_driver_cards_v3";
 
 const DRIVERS = [
-  { key: "strong",  label: "강해져야 해",  accent: "#bcd8ff" },
-  { key: "perfect", label: "완벽해야 해",  accent: "#ffd1bd" },
-  { key: "hurry",   label: "서둘러야 해",  accent: "#bfecc8" },
-  { key: "try",     label: "열심히 해야 해", accent: "#ffe1a6" },
-  { key: "please",  label: "기쁘게 해야 해", accent: "#d7c4ff" },
+  { key: "strong",  label: "강해져야 해",  accent: "#79b6ff" },
+  { key: "perfect", label: "완벽해야 해",  accent: "#ff8f6d" },
+  { key: "hurry",   label: "서둘러야 해",  accent: "#57c07a" },
+  { key: "try",     label: "열심히 해야 해", accent: "#f5b52a" },
+  { key: "please",  label: "기쁘게 해야 해", accent: "#9a7bff" },
 ];
 
 const TYPE_LABEL = { strength: "강점", overuse: "과용" };
@@ -148,33 +148,70 @@ function markSelected(){
 
 function computeResults(){
   const result = {};
-  DRIVERS.forEach(d => result[d.key] = { strength:0, overuse:0 });
+  DRIVERS.forEach(d => result[d.key] = { strength:0, overuse:0, total:0 });
 
   selected.forEach(i => {
     const c = CARDS[i];
     if(!c) return;
+    result[c.driver].total += 1;
     if(c.type === "strength") result[c.driver].strength += 1;
     if(c.type === "overuse")  result[c.driver].overuse  += 1;
   });
   return result;
 }
 
+function interpretLine(strength, overuse){
+  // 강점 0~4 / 과용 0~4
+  if(strength <= 1 && overuse <= 1) return "선택이 적어, 현재는 이 드라이브가 강하게 드러나지 않는 편입니다.";
+  if(strength >= 3 && overuse <= 1) return "강점으로 잘 쓰이고 있는 상태입니다. 상황에 따라 유지하면 좋습니다.";
+  if(strength >= 2 && overuse >= 2) return "강점은 있으나 과용 신호도 함께 보입니다. 장점이 부담으로 바뀌는 순간을 점검해보면 좋습니다.";
+  if(strength <= 1 && overuse >= 3) return "과용 신호가 두드러집니다. 스트레스 상황에서 이 드라이브가 더 강해질 수 있습니다.";
+  if(overuse >= 2) return "과용 쪽 선택이 있어, 부담 신호를 함께 체크해보면 좋습니다.";
+  return "강점/과용이 함께 보입니다. 상황에 따라 조절 포인트를 찾으면 좋습니다.";
+}
+
 function renderResults(){
   const r = computeResults();
+
+  $("guideBox").textContent =
+    "해석 방법: 선택이 많을수록 해당 드라이브가 잘 드러납니다. 강점 선택이 많으면 도움이 되는 방향으로 쓰는 중이고, 과용 선택이 많으면 스트레스 상황에서 부담으로 바뀔 가능성이 있습니다. 막대는 4점 만점입니다.";
+
   const wrap = $("resultWrap");
   wrap.innerHTML = "";
+
   DRIVERS.forEach(d => {
     const s = r[d.key].strength;
     const o = r[d.key].overuse;
-    const div = document.createElement("div");
-    div.style.margin = "10px 0";
-    div.style.padding = "12px 14px";
-    div.style.borderRadius = "16px";
-    div.style.border = "1px solid rgba(17,19,24,.08)";
-    div.style.background = "rgba(255,255,255,.75)";
-    div.innerHTML = `<div style="font-weight:900; font-size:18px; margin-bottom:6px;">${d.label}</div>
-      <div style="color:rgba(17,19,24,.70); font-weight:800;">강점 ${s}/4 · 과용 ${o}/4</div>`;
-    wrap.appendChild(div);
+    const t = r[d.key].total;
+
+    const block = document.createElement("div");
+    block.className = "block";
+    block.style.setProperty("--accent", d.accent);
+
+    block.innerHTML = `
+      <div class="h2">${d.label}</div>
+
+      <div class="row labels">
+        <div>선택 개수</div>
+        <div>${t}/8</div>
+      </div>
+
+      <div class="row labels" style="margin-top:10px;">
+        <div>강점</div>
+        <div>${s}/4</div>
+      </div>
+      <div class="bar"><div class="fill" style="width:${(s/4)*100}%; background:${d.accent};"></div></div>
+
+      <div class="row labels">
+        <div>과용</div>
+        <div>${o}/4</div>
+      </div>
+      <div class="bar"><div class="fill" style="width:${(o/4)*100}%; background:${d.accent};"></div></div>
+
+      <div class="metaLine">${interpretLine(s, o)}</div>
+    `;
+
+    wrap.appendChild(block);
   });
 }
 
@@ -182,7 +219,6 @@ function wireEvents(){
   const btn = $("btnBegin");
   const go = () => { showScreen("screenPlay"); renderCard(); };
 
-  // ✅ 모바일 터치 안정화
   btn.addEventListener("click", go);
   btn.addEventListener("touchend", (e) => { e.preventDefault(); go(); }, { passive:false });
 
